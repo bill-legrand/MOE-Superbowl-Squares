@@ -906,7 +906,7 @@
             font-weight: 600;
             line-height: 1.2;
             min-height: 62px;
-            cursor: default;
+            cursor: pointer;
             transition: transform 0.15s, box-shadow 0.15s;
             position: relative;
             color: #fff;
@@ -941,6 +941,22 @@
         @keyframes live-square-pulse {
             0%, 100% { box-shadow: 0 0 10px rgba(46,204,113,0.4); }
             50% { box-shadow: 0 0 28px rgba(46,204,113,0.8); }
+        }
+
+        .square.square-click-highlight {
+            outline: 4px solid #fff;
+            outline-offset: -3px;
+            z-index: 8;
+            animation: click-square-pulse 1.5s infinite;
+        }
+
+        .square-dimmed {
+            opacity: 0.3;
+        }
+
+        @keyframes click-square-pulse {
+            0%, 100% { box-shadow: 0 0 12px rgba(255,255,255,0.5); }
+            50% { box-shadow: 0 0 30px rgba(255,255,255,0.9); }
         }
 
         /* ── Legend ───────────────────────────────────────────── */
@@ -1996,6 +2012,7 @@ function renderGrid() {
             el.className = "square";
             el.dataset.row = r;
             el.dataset.col = c;
+            el.dataset.participantName = p.name;
             el.style.gridRow    = String(r + 3);
             el.style.gridColumn = String(c + 2);
             el.style.background = "linear-gradient(145deg, " + p.color + "ee, " + p.color + "bb)";
@@ -2006,11 +2023,52 @@ function renderGrid() {
             el.appendChild(span);
 
             el.title = p.name + "\n" + p.totalSquares + " squares ($" + p.totalAmount + ")\nCol " + colNums[c] + "  /  Row " + rowNums[r];
+            
+            // Add click handler to highlight all squares for this person
+            el.addEventListener("click", function() {
+                highlightSquaresByPerson(p.name);
+            });
+            
             grid.appendChild(el);
         }
     }
 
     document.getElementById("team-left-label").textContent = CONFIG.teamLeft;
+}
+
+// ================================================================
+// HIGHLIGHT SQUARES BY PERSON
+// ================================================================
+var activeSquareHighlight = null;
+
+function highlightSquaresByPerson(personName) {
+    // If clicking the same person, toggle off
+    if (activeSquareHighlight === personName) {
+        clearSquareHighlights();
+        activeSquareHighlight = null;
+        return;
+    }
+    
+    // Clear previous highlights
+    clearSquareHighlights();
+    
+    activeSquareHighlight = personName;
+    
+    // Find all squares for this person and highlight them
+    document.querySelectorAll(".square").forEach(function(sq) {
+        if (sq.dataset.participantName === personName) {
+            sq.classList.add("square-click-highlight");
+        } else {
+            sq.classList.add("square-dimmed");
+        }
+    });
+}
+
+function clearSquareHighlights() {
+    document.querySelectorAll(".square").forEach(function(sq) {
+        sq.classList.remove("square-click-highlight");
+        sq.classList.remove("square-dimmed");
+    });
 }
 
 // ================================================================
