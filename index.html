@@ -2006,6 +2006,13 @@ function renderGrid() {
             el.appendChild(span);
 
             el.title = p.name + "\n" + p.totalSquares + " squares ($" + p.totalAmount + ")\nCol " + colNums[c] + "  /  Row " + rowNums[r];
+            
+            // Add click handler to use same highlight as legend
+            el.addEventListener("click", function() {
+                toggleLegendHighlight(p.name);
+            });
+            el.style.cursor = "pointer";
+            
             grid.appendChild(el);
         }
     }
