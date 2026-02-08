@@ -789,28 +789,18 @@
         .quarter-card .q-scores .team-abbr.left { text-align: right; }
         .quarter-card .q-scores .team-abbr.right { text-align: left; }
 
-        .quarter-card .q-scores input {
-            width: 46px;
+        .quarter-card .q-scores .q-score-display {
+            min-width: 46px;
             padding: 6px 4px;
             text-align: center;
             font-size: 1.1rem;
             font-weight: 700;
             font-family: inherit;
-            background: #0d1230;
             color: var(--text);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            outline: none;
-            transition: border-color 0.2s;
         }
 
-        .quarter-card .q-scores input:focus {
-            border-color: var(--gold);
-        }
-
-        .quarter-card .q-scores input.live-filled {
-            border-color: var(--accent-green);
-            background: #0d1a1a;
+        .quarter-card .q-scores .q-score-display.filled {
+            color: var(--accent-green);
         }
 
         .quarter-card .q-scores .score-dash {
@@ -1151,16 +1141,9 @@ const STORAGE_KEY = "moe_sb_squares";
 function saveState() {
     const state = {
         locked: isLocked,
-        seed: currentSeed,
-        scores: {}
+        seed: currentSeed
+        // Scores are no longer saved - they come from API only
     };
-    ["Q1","Q2","Q3","Final"].forEach(q => {
-        const topInput  = document.getElementById("score-top-" + q);
-        const leftInput = document.getElementById("score-left-" + q);
-        if (topInput && leftInput) {
-            state.scores[q] = { top: topInput.value, left: leftInput.value };
-        }
-    });
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
@@ -1366,11 +1349,9 @@ function renderScoring() {
             '<div class="q-label">' + (q === "Final" ? "Final Score" : q) + '</div>' +
             '<div class="q-scores">' +
                 '<span class="team-abbr left">' + CONFIG.teamTopAbbr + '</span>' +
-                '<input type="number" id="score-top-' + q + '" min="0" max="99" placeholder="\u2014"' +
-                '       oninput="onScoreChange(\'' + q + '\')" />' +
+                '<span class="q-score-display" id="score-display-top-' + q + '">&mdash;</span>' +
                 '<span class="score-dash">&ndash;</span>' +
-                '<input type="number" id="score-left-' + q + '" min="0" max="99" placeholder="\u2014"' +
-                '       oninput="onScoreChange(\'' + q + '\')" />' +
+                '<span class="q-score-display" id="score-display-left-' + q + '">&mdash;</span>' +
                 '<span class="team-abbr right">' + CONFIG.teamLeftAbbr + '</span>' +
             '</div>' +
             '<div class="q-winner" id="winner-' + q + '">&mdash;</div>' +
@@ -1382,32 +1363,14 @@ function renderScoring() {
 // ================================================================
 // SCORE → WINNER LOOKUP (manual entry)
 // ================================================================
+// These functions are no longer needed as scores are populated from API only
+// Keeping stubs for backwards compatibility
 function onScoreChange(quarter) {
-    var topVal  = document.getElementById("score-top-" + quarter).value;
-    var leftVal = document.getElementById("score-left-" + quarter).value;
-    var winnerEl = document.getElementById("winner-" + quarter);
+    // No-op: scores are now read-only from API
+}
 
-    clearHighlights();
-
-    if (topVal === "" || leftVal === "") {
-        winnerEl.textContent = "\u2014";
-        winnerEl.style.color = "";
-        saveState();
-        reapplyAllHighlights();
-        return;
-    }
-
-    var result = lookupWinner(parseInt(topVal, 10), parseInt(leftVal, 10));
-    if (!result) {
-        winnerEl.textContent = "\u2014";
-        winnerEl.style.color = "";
-    } else {
-        winnerEl.textContent = result.participant.name;
-        winnerEl.style.color = result.participant.color;
-    }
-
-    saveState();
-    reapplyAllHighlights();
+function recheckAllScores() {
+    // No-op: scores are now read-only from API
 }
 
 function clearHighlights() {
@@ -1958,7 +1921,7 @@ function autoFillQuarterScores(topComp, leftComp, currentPeriod, statusType) {
 
     var qMap = ["Q1","Q2","Q3","Final"];
 
-    // For each completed quarter, compute cumulative score and fill inputs
+    // For each completed quarter, compute cumulative score and update display
     for (var q = 0; q < 4; q++) {
         var quarterKey = qMap[q];
         var periodsNeeded = (q < 3) ? (q + 1) : topLines.length; // Final = all periods
@@ -1976,7 +1939,18 @@ function autoFillQuarterScores(topComp, leftComp, currentPeriod, statusType) {
             isComplete = statusType === "STATUS_FINAL" || statusType === "STATUS_FINAL_OVERTIME";
         }
 
-        if (!isComplete) continue;
+        var topDisplay  = document.getElementById("score-display-top-" + quarterKey);
+        var leftDisplay = document.getElementById("score-display-left-" + quarterKey);
+        var winnerEl    = document.getElementById("winner-" + quarterKey);
+
+        if (!isComplete) {
+            // Reset if not complete
+            if (topDisplay) topDisplay.textContent = "—";
+            if (leftDisplay) leftDisplay.textContent = "—";
+            if (winnerEl) winnerEl.textContent = "—";
+            continue;
+        }
+        
         if (topLines.length < periodsNeeded || leftLines.length < periodsNeeded) continue;
 
         // Compute cumulative score through this quarter
@@ -1986,14 +1960,24 @@ function autoFillQuarterScores(topComp, leftComp, currentPeriod, statusType) {
             leftCum += parseFloat(leftLines[p].value) || 0;
         }
 
-        var topInput  = document.getElementById("score-top-" + quarterKey);
-        var leftInput = document.getElementById("score-left-" + quarterKey);
-        if (topInput && leftInput) {
-            topInput.value  = topCum;
-            leftInput.value = leftCum;
-            topInput.classList.add("live-filled");
-            leftInput.classList.add("live-filled");
-            onScoreChange(quarterKey);
+        // Update score displays
+        if (topDisplay && leftDisplay) {
+            topDisplay.textContent  = topCum;
+            leftDisplay.textContent = leftCum;
+            topDisplay.classList.add("filled");
+            leftDisplay.classList.add("filled");
+        }
+
+        // Calculate and display winner
+        var result = lookupWinner(topCum, leftCum);
+        if (winnerEl) {
+            if (result) {
+                winnerEl.textContent = result.participant.name;
+                winnerEl.style.color = result.participant.color;
+            } else {
+                winnerEl.textContent = "—";
+                winnerEl.style.color = "";
+            }
         }
     }
 }
@@ -2018,17 +2002,7 @@ function init() {
     renderScoring();
     updateLockUI();
 
-    if (saved && saved.scores) {
-        ["Q1","Q2","Q3","Final"].forEach(function(q) {
-            if (saved.scores[q]) {
-                var topInput  = document.getElementById("score-top-" + q);
-                var leftInput = document.getElementById("score-left-" + q);
-                if (topInput)  topInput.value  = saved.scores[q].top  || "";
-                if (leftInput) leftInput.value = saved.scores[q].left || "";
-            }
-        });
-        recheckAllScores();
-    }
+    // Scores are now populated from API only, no need to load from localStorage
 
     // Auto-start live score since live tab is default
     startLiveScore();
