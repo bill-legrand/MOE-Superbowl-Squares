@@ -1395,63 +1395,18 @@
 // ================================================================
 let db = null;
 let chatRef = null;
-let analyticsRef = null;
 
 try {
     if (typeof firebaseConfig !== 'undefined' && firebaseConfig.apiKey !== 'YOUR_API_KEY') {
         firebase.initializeApp(firebaseConfig);
         db = firebase.database();
         chatRef = db.ref('messages');
-        analyticsRef = db.ref('analytics');
         console.log('Firebase initialized successfully');
     } else {
         console.warn('Firebase not configured. Chat will not work until you add your Firebase credentials to firebase-config.js');
     }
 } catch (error) {
     console.error('Firebase initialization error:', error);
-}
-
-// ================================================================
-// ANALYTICS & ACCESS LOGGING
-// ================================================================
-function logPageView() {
-    if (!analyticsRef) return;
-    
-    const sessionId = sessionStorage.getItem('sessionId') || 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    sessionStorage.setItem('sessionId', sessionId);
-    
-    const logData = {
-        timestamp: Date.now(),
-        sessionId: sessionId,
-        userAgent: navigator.userAgent,
-        screen: `${window.screen.width}x${window.screen.height}`,
-        viewport: `${window.innerWidth}x${window.innerHeight}`,
-        referrer: document.referrer || 'direct',
-        page: 'main',
-        url: window.location.href
-    };
-    
-    analyticsRef.child('pageviews').push(logData);
-}
-
-function logEvent(eventType, eventData = {}) {
-    if (!analyticsRef) return;
-    
-    const sessionId = sessionStorage.getItem('sessionId') || 'unknown';
-    
-    const logData = {
-        timestamp: Date.now(),
-        sessionId: sessionId,
-        eventType: eventType,
-        ...eventData
-    };
-    
-    analyticsRef.child('events').push(logData);
-}
-
-// Log initial page view
-if (analyticsRef) {
-    logPageView();
 }
 
 // ================================================================
@@ -1544,8 +1499,6 @@ function sendMessage() {
     
     chatRef.push(messageData);
     input.value = '';
-    
-    logEvent('chat_message', { username: currentUsername, messageLength: message.length });
 }
 
 function listenToMessages() {
@@ -1692,6 +1645,20 @@ function addReaction(msgId, emoji) {
     // Add reaction with username as key to prevent duplicates per user
     const userKey = currentUsername.replace(/[.#$[\]]/g, '_'); // Sanitize for Firebase key
     chatRef.child(msgId).child('reactions').child(userKey).set(emoji);
+}
+    
+    // Add to both containers
+    const messagesContainer = document.getElementById('chat-messages');
+    if (messagesContainer) {
+        messagesContainer.appendChild(messageDiv.cloneNode(true));
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+    
+    const messagesContainerMobile = document.getElementById('chat-messages-mobile');
+    if (messagesContainerMobile) {
+        messagesContainerMobile.appendChild(messageDiv.cloneNode(true));
+        messagesContainerMobile.scrollTop = messagesContainerMobile.scrollHeight;
+    }
 }
 
 // Mobile chat functions (mirrors of desktop)
@@ -2039,14 +2006,6 @@ function renderGrid() {
             el.appendChild(span);
 
             el.title = p.name + "\n" + p.totalSquares + " squares ($" + p.totalAmount + ")\nCol " + colNums[c] + "  /  Row " + rowNums[r];
-            
-            // Add click handler to use same highlight as legend
-            el.addEventListener("click", function() {
-                toggleLegendHighlight(p.name);
-                logEvent('square_click', { participant: p.name });
-            });
-            el.style.cursor = "pointer";
-            
             grid.appendChild(el);
         }
     }
@@ -2322,8 +2281,6 @@ function switchTab(tabName) {
     if (tabName === 'live' && !isLiveMode) {
         startLiveScore();
     }
-    
-    logEvent('tab_switch', { tab: tabName });
 }
 
 // ================================================================
