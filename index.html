@@ -27,7 +27,46 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+        }
+
+        /* ── Main Layout ─────────────────────────────────────── */
+        .main-layout {
+            display: flex;
+            flex: 1;
+            width: 100%;
+            max-width: 1600px;
+            margin: 0 auto;
+            gap: 20px;
+            padding: 0 10px;
+        }
+
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
             align-items: center;
+            min-width: 0;
+        }
+
+        .chat-sidebar {
+            width: 350px;
+            position: sticky;
+            top: 10px;
+            height: calc(100vh - 20px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (max-width: 1200px) {
+            .main-layout {
+                flex-direction: column;
+            }
+            .chat-sidebar {
+                width: 100%;
+                position: relative;
+                height: 500px;
+                top: 0;
+            }
         }
 
         /* ── Header ──────────────────────────────────────────── */
@@ -302,14 +341,12 @@
             flex-wrap: wrap;
         }
 
-        /* ── Chat ────────────────────────────────────────────── */
+        /* ── Chat Sidebar ───────────────────────────────────── */
         .chat-container {
-            max-width: 800px;
             width: 100%;
-            margin: 0 auto;
+            height: 100%;
             display: flex;
             flex-direction: column;
-            height: 600px;
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 10px;
@@ -317,37 +354,38 @@
         }
 
         .chat-header {
-            padding: 16px;
+            padding: 12px 16px;
             background: rgba(10, 14, 39, 0.5);
             border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
         }
 
         .chat-header h3 {
             color: var(--gold);
-            margin-bottom: 10px;
-            font-size: 1.1rem;
+            margin-bottom: 8px;
+            font-size: 1rem;
         }
 
         .chat-user-setup {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
         }
 
         .chat-user-setup input {
             flex: 1;
-            padding: 8px 12px;
+            padding: 6px 10px;
             background: var(--bg-dark);
             border: 1px solid var(--border);
             border-radius: 6px;
             color: var(--text);
             font-family: inherit;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
         }
 
         .chat-user-info {
             color: var(--text-dim);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .chat-user-info strong {
@@ -355,15 +393,15 @@
         }
 
         .btn-small {
-            padding: 4px 12px;
+            padding: 3px 10px;
             background: transparent;
             border: 1px solid var(--border);
             border-radius: 4px;
             color: var(--text-dim);
             font-family: inherit;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             cursor: pointer;
-            margin-left: 10px;
+            margin-left: 8px;
         }
 
         .btn-small:hover {
@@ -373,27 +411,45 @@
 
         .chat-messages {
             flex: 1;
-            padding: 16px;
+            padding: 12px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: var(--gold);
         }
 
         .chat-loading {
             text-align: center;
             color: var(--text-dim);
             padding: 20px;
+            font-size: 0.85rem;
         }
 
         .chat-message {
             display: flex;
             flex-direction: column;
-            gap: 4px;
-            padding: 10px;
+            gap: 3px;
+            padding: 8px;
             background: rgba(20, 25, 55, 0.5);
-            border-radius: 8px;
-            border-left: 3px solid var(--gold);
+            border-radius: 6px;
+            border-left: 2px solid var(--gold);
         }
 
         .chat-message-header {
@@ -405,38 +461,39 @@
         .chat-message-user {
             font-weight: 700;
             color: var(--gold);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .chat-message-time {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-dim);
         }
 
         .chat-message-text {
             color: var(--text);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             line-height: 1.4;
             word-wrap: break-word;
         }
 
         .chat-input-container {
-            padding: 16px;
+            padding: 12px;
             background: rgba(10, 14, 39, 0.5);
             border-top: 1px solid var(--border);
             display: flex;
-            gap: 10px;
+            gap: 8px;
+            flex-shrink: 0;
         }
 
         .chat-input-container input {
             flex: 1;
-            padding: 10px 14px;
+            padding: 8px 12px;
             background: var(--bg-dark);
             border: 1px solid var(--border);
             border-radius: 6px;
             color: var(--text);
             font-family: inherit;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
 
         .chat-input-container input:focus {
@@ -445,6 +502,28 @@
         }
 
         .chat-input-container input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .chat-input-container button {
+            padding: 8px 16px;
+            background: var(--gold);
+            color: var(--bg-dark);
+            border: none;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .chat-input-container button:hover {
+            background: var(--gold-light);
+        }
+
+        .chat-input-container button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
@@ -1052,12 +1131,13 @@
     </div>
 </div>
 
-<div class="tabs-container">
-    <div class="tabs-nav">
-        <button class="tab-button active" onclick="switchTab('live')">Live Score</button>
-        <button class="tab-button" onclick="switchTab('chat')">Chat</button>
-        <button class="tab-button" onclick="switchTab('admin')">Admin</button>
-    </div>
+<div class="main-layout">
+    <div class="content-area">
+        <div class="tabs-container">
+            <div class="tabs-nav">
+                <button class="tab-button active" onclick="switchTab('live')">Live Score</button>
+                <button class="tab-button" onclick="switchTab('admin')">Admin</button>
+            </div>
 
     <div id="tab-live" class="tab-content active">
         <div class="live-scoreboard" id="live-scoreboard">
@@ -1115,31 +1195,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="tab-chat" class="tab-content">
-        <div class="chat-container">
-            <div class="chat-header">
-                <h3>Game Chat</h3>
-                <div class="chat-user-setup" id="chat-user-setup">
-                    <input type="text" id="chat-username" placeholder="Enter your name" maxlength="20" />
-                    <button class="btn btn-shuffle" onclick="setUsername()">Join Chat</button>
-                </div>
-                <div class="chat-user-info" id="chat-user-info" style="display: none;">
-                    <span>Chatting as: <strong id="display-username"></strong></span>
-                    <button class="btn-small" onclick="changeUsername()">Change</button>
-                </div>
-            </div>
-            
-            <div class="chat-messages" id="chat-messages">
-                <div class="chat-loading">Loading messages...</div>
-            </div>
-            
-            <div class="chat-input-container">
-                <input type="text" id="chat-input" placeholder="Type a message..." maxlength="200" disabled />
-                <button class="btn btn-shuffle" id="chat-send-btn" onclick="sendMessage()" disabled>Send</button>
             </div>
         </div>
     </div>
@@ -1202,6 +1257,34 @@
     <div class="scoring-title">Quarter Results</div>
     <div class="scoring-grid" id="scoring"></div>
 </div>
+
+    </div><!-- End content-area -->
+
+    <div class="chat-sidebar">
+        <div class="chat-container">
+            <div class="chat-header">
+                <h3>Game Chat</h3>
+                <div class="chat-user-setup" id="chat-user-setup">
+                    <input type="text" id="chat-username" placeholder="Enter your name" maxlength="20" />
+                    <button onclick="setUsername()">Join</button>
+                </div>
+                <div class="chat-user-info" id="chat-user-info" style="display: none;">
+                    <span><strong id="display-username"></strong></span>
+                    <button class="btn-small" onclick="changeUsername()">Change</button>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages">
+                <div class="chat-loading">Loading messages...</div>
+            </div>
+            
+            <div class="chat-input-container">
+                <input type="text" id="chat-input" placeholder="Type a message..." maxlength="200" disabled />
+                <button id="chat-send-btn" onclick="sendMessage()" disabled>Send</button>
+            </div>
+        </div>
+    </div>
+</div><!-- End main-layout -->
 
 <div class="footer">
     MOE Super Bowl Squares &bull; Super Bowl LX &bull; 2026
@@ -1846,11 +1929,6 @@ function switchTab(tabName) {
     if (tabName === 'live' && !isLiveMode) {
         startLiveScore();
     }
-    
-    // Initialize chat when chat tab is opened
-    if (tabName === 'chat' && currentUsername && chatRef && !messagesListener) {
-        listenToMessages();
-    }
 }
 
 // ================================================================
@@ -2340,6 +2418,11 @@ function init() {
 
     // Auto-start live score since live tab is default
     startLiveScore();
+    
+    // Auto-start chat if username is already set
+    if (currentUsername && chatRef) {
+        listenToMessages();
+    }
 }
 
 init();
