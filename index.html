@@ -302,6 +302,153 @@
             flex-wrap: wrap;
         }
 
+        /* ── Chat ────────────────────────────────────────────── */
+        .chat-container {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 16px;
+            background: rgba(10, 14, 39, 0.5);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .chat-header h3 {
+            color: var(--gold);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .chat-user-setup {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .chat-user-setup input {
+            flex: 1;
+            padding: 8px 12px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        .chat-user-info {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .chat-user-info strong {
+            color: var(--gold);
+        }
+
+        .btn-small {
+            padding: 4px 12px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text-dim);
+            font-family: inherit;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .btn-small:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .chat-loading {
+            text-align: center;
+            color: var(--text-dim);
+            padding: 20px;
+        }
+
+        .chat-message {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 10px;
+            background: rgba(20, 25, 55, 0.5);
+            border-radius: 8px;
+            border-left: 3px solid var(--gold);
+        }
+
+        .chat-message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-message-user {
+            font-weight: 700;
+            color: var(--gold);
+            font-size: 0.9rem;
+        }
+
+        .chat-message-time {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+
+        .chat-message-text {
+            color: var(--text);
+            font-size: 0.95rem;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .chat-input-container {
+            padding: 16px;
+            background: rgba(10, 14, 39, 0.5);
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input-container input {
+            flex: 1;
+            padding: 10px 14px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        .chat-input-container input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .chat-input-container input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         /* ── Live Scoreboard ─────────────────────────────────── */
         .live-scoreboard {
             max-width: 920px;
@@ -908,6 +1055,7 @@
 <div class="tabs-container">
     <div class="tabs-nav">
         <button class="tab-button active" onclick="switchTab('live')">Live Score</button>
+        <button class="tab-button" onclick="switchTab('chat')">Chat</button>
         <button class="tab-button" onclick="switchTab('admin')">Admin</button>
     </div>
 
@@ -967,6 +1115,31 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-chat" class="tab-content">
+        <div class="chat-container">
+            <div class="chat-header">
+                <h3>Game Chat</h3>
+                <div class="chat-user-setup" id="chat-user-setup">
+                    <input type="text" id="chat-username" placeholder="Enter your name" maxlength="20" />
+                    <button class="btn btn-shuffle" onclick="setUsername()">Join Chat</button>
+                </div>
+                <div class="chat-user-info" id="chat-user-info" style="display: none;">
+                    <span>Chatting as: <strong id="display-username"></strong></span>
+                    <button class="btn-small" onclick="changeUsername()">Change</button>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages">
+                <div class="chat-loading">Loading messages...</div>
+            </div>
+            
+            <div class="chat-input-container">
+                <input type="text" id="chat-input" placeholder="Type a message..." maxlength="200" disabled />
+                <button class="btn btn-shuffle" id="chat-send-btn" onclick="sendMessage()" disabled>Send</button>
             </div>
         </div>
     </div>
@@ -1034,7 +1207,163 @@
     MOE Super Bowl Squares &bull; Super Bowl LX &bull; 2026
 </div>
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
+
 <script>
+// ================================================================
+// FIREBASE INITIALIZATION
+// ================================================================
+let db = null;
+let chatRef = null;
+
+try {
+    if (typeof firebaseConfig !== 'undefined' && firebaseConfig.apiKey !== 'YOUR_API_KEY') {
+        firebase.initializeApp(firebaseConfig);
+        db = firebase.database();
+        chatRef = db.ref('messages');
+        console.log('Firebase initialized successfully');
+    } else {
+        console.warn('Firebase not configured. Chat will not work until you add your Firebase credentials to firebase-config.js');
+    }
+} catch (error) {
+    console.error('Firebase initialization error:', error);
+}
+
+// ================================================================
+// CHAT FUNCTIONALITY
+// ================================================================
+let currentUsername = localStorage.getItem('chatUsername') || '';
+let messagesListener = null;
+
+function setUsername() {
+    const input = document.getElementById('chat-username');
+    const username = input.value.trim();
+    
+    if (!username) {
+        alert('Please enter a name');
+        return;
+    }
+    
+    if (username.length < 2) {
+        alert('Name must be at least 2 characters');
+        return;
+    }
+    
+    currentUsername = username;
+    localStorage.setItem('chatUsername', username);
+    
+    document.getElementById('chat-user-setup').style.display = 'none';
+    document.getElementById('chat-user-info').style.display = 'block';
+    document.getElementById('display-username').textContent = username;
+    document.getElementById('chat-input').disabled = false;
+    document.getElementById('chat-send-btn').disabled = false;
+    
+    // Start listening to messages
+    if (chatRef) {
+        listenToMessages();
+    }
+}
+
+function changeUsername() {
+    document.getElementById('chat-user-setup').style.display = 'flex';
+    document.getElementById('chat-user-info').style.display = 'none';
+    document.getElementById('chat-input').disabled = true;
+    document.getElementById('chat-send-btn').disabled = true;
+    document.getElementById('chat-username').value = currentUsername;
+    
+    // Stop listening
+    if (messagesListener) {
+        chatRef.off('child_added', messagesListener);
+        messagesListener = null;
+    }
+}
+
+function sendMessage() {
+    const input = document.getElementById('chat-input');
+    const message = input.value.trim();
+    
+    if (!message) return;
+    if (!chatRef) {
+        alert('Chat is not configured. Please add Firebase credentials.');
+        return;
+    }
+    
+    const messageData = {
+        username: currentUsername,
+        text: message,
+        timestamp: Date.now()
+    };
+    
+    chatRef.push(messageData);
+    input.value = '';
+}
+
+function listenToMessages() {
+    if (!chatRef) {
+        document.querySelector('.chat-loading').textContent = 'Chat not configured. Add Firebase credentials to enable.';
+        return;
+    }
+    
+    const messagesContainer = document.getElementById('chat-messages');
+    messagesContainer.innerHTML = '';
+    
+    // Listen for new messages (limit to last 50)
+    chatRef.orderByChild('timestamp').limitToLast(50).on('child_added', function(snapshot) {
+        const msg = snapshot.val();
+        addMessageToUI(msg);
+    });
+}
+
+function addMessageToUI(msg) {
+    const messagesContainer = document.getElementById('chat-messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'chat-message';
+    
+    const time = new Date(msg.timestamp);
+    const timeStr = time.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    
+    messageDiv.innerHTML = `
+        <div class="chat-message-header">
+            <span class="chat-message-user">${escapeHtml(msg.username)}</span>
+            <span class="chat-message-time">${timeStr}</span>
+        </div>
+        <div class="chat-message-text">${escapeHtml(msg.text)}</div>
+    `;
+    
+    messagesContainer.appendChild(messageDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Initialize chat if username is already set
+if (currentUsername && chatRef) {
+    document.getElementById('chat-user-setup').style.display = 'none';
+    document.getElementById('chat-user-info').style.display = 'block';
+    document.getElementById('display-username').textContent = currentUsername;
+    document.getElementById('chat-input').disabled = false;
+    document.getElementById('chat-send-btn').disabled = false;
+}
+
+// Allow Enter key to send messages
+document.addEventListener('DOMContentLoaded', function() {
+    const chatInput = document.getElementById('chat-input');
+    if (chatInput) {
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    }
+});
+
 // ================================================================
 // CONFIGURATION
 // ================================================================
@@ -1516,6 +1845,11 @@ function switchTab(tabName) {
     // Start/stop live score based on tab
     if (tabName === 'live' && !isLiveMode) {
         startLiveScore();
+    }
+    
+    // Initialize chat when chat tab is opened
+    if (tabName === 'chat' && currentUsername && chatRef && !messagesListener) {
+        listenToMessages();
     }
 }
 
