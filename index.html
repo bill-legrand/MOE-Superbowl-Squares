@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOE Super Bowl Squares - Super Bowl LX</title>
+    <style>
+        :root {
+            --bg-dark: #0a0e27;
+            --bg-card: #141937;
+            --gold: #c9a84c;
+            --gold-light: #e8d48b;
+            --silver: #b8c0d0;
+            --text: #e8eaf0;
+            --text-dim: #7a82a0;
+            --border: #2a3060;
+            --accent-green: #2ecc71;
+            --accent-red: #e74c3c;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ── Header ──────────────────────────────────────────── */
+        .header {
+            text-align: center;
+            padding: 30px 20px 10px;
+            width: 100%;
+            background: linear-gradient(180deg, #0f1535 0%, var(--bg-dark) 100%);
+        }
+
+        .header h1 {
+            font-size: 2.4rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 4px;
+        }
+
+        .header .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-dim);
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .header .game-info {
+            font-size: 1.05rem;
+            color: var(--silver);
+            margin-top: 4px;
+        }
+
+        .header .game-info .vs {
+            color: var(--gold);
+            font-weight: 700;
+            margin: 0 10px;
+        }
+
+        .header .game-date {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+
+        /* ── Pot Info ────────────────────────────────────────── */
+        .pot-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 14px 0 8px;
+            flex-wrap: wrap;
+        }
+
+        .pot-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 24px;
+            text-align: center;
+        }
+
+        .pot-item .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+        }
+
+        .pot-item .value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        /* ── Buttons ─────────────────────────────────────────── */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin: 18px 0 6px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 28px;
+            border: 2px solid var(--gold);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-shuffle {
+            background: transparent;
+            color: var(--gold);
+        }
+
+        .btn-shuffle:hover:not(:disabled) {
+            background: var(--gold);
+            color: var(--bg-dark);
+        }
+
+        .btn-lock {
+            background: var(--accent-green);
+            color: #fff;
+            border-color: var(--accent-green);
+        }
+
+        .btn-lock:hover:not(:disabled) {
+            background: #27ae60;
+            border-color: #27ae60;
+        }
+
+        .btn-locked {
+            background: var(--accent-red);
+            border-color: var(--accent-red);
+            color: #fff;
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .lock-status {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--accent-green);
+            letter-spacing: 1px;
+            margin-top: 4px;
+            min-height: 1.2em;
+        }
+
+        .lock-status.is-locked {
+            color: var(--accent-red);
+            font-weight: 700;
+        }
+
+        /* ── Grid ────────────────────────────────────────────── */
+        .grid-wrapper {
+            margin: 14px auto;
+            padding: 0 10px 0 55px;
+            max-width: 920px;
+            width: 100%;
+            position: relative;
+        }
+
+        .team-left-label {
+            position: absolute;
+            left: 4px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-90deg);
+            font-weight: 700;
+            font-size: 1.05rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--gold-light);
+            white-space: nowrap;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 56px repeat(10, 1fr);
+            grid-template-rows: 46px 38px repeat(10, 1fr);
+            gap: 2px;
+            background: var(--border);
+            border: 2px solid var(--gold);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .team-label-top {
+            grid-column: 2 / -1;
+            grid-row: 1;
+            text-align: center;
+            padding: 10px;
+            background: #1a2050;
+            font-weight: 700;
+            font-size: 1.05rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--gold-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .corner {
+            grid-column: 1;
+            grid-row: 1 / 3;
+            background: #0d1230;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .num-header {
+            background: #161d48;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--gold);
+        }
+
+        .square {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 3px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            line-height: 1.2;
+            min-height: 62px;
+            cursor: default;
+            transition: transform 0.15s, box-shadow 0.15s;
+            position: relative;
+            color: #fff;
+        }
+
+        .square:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 18px rgba(201, 168, 76, 0.5);
+            z-index: 10;
+        }
+
+        .square .name {
+            word-break: break-word;
+            hyphens: auto;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+        }
+
+        .square.highlight {
+            outline: 3px solid var(--gold);
+            outline-offset: -2px;
+            box-shadow: 0 0 20px rgba(201, 168, 76, 0.7);
+            z-index: 5;
+        }
+
+        /* ── Legend ───────────────────────────────────────────── */
+        .legend-section {
+            max-width: 920px;
+            width: 100%;
+            padding: 0 10px;
+            margin: 10px auto 30px;
+        }
+
+        .legend-title {
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .legend-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 6px 14px;
+            font-size: 0.82rem;
+        }
+
+        .legend-swatch {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .legend-name { color: var(--text); font-weight: 600; }
+        .legend-count { color: var(--text-dim); font-size: 0.75rem; }
+
+        /* ── Scoring / Payouts ───────────────────────────────── */
+        .scoring-section {
+            max-width: 920px;
+            width: 100%;
+            padding: 0 10px;
+            margin: 0 auto 40px;
+        }
+
+        .scoring-title {
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .scoring-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .quarter-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .quarter-card .q-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+        }
+
+        .quarter-card .q-scores {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .quarter-card .q-scores .team-abbr {
+            font-size: 0.6rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 42px;
+        }
+
+        .quarter-card .q-scores .team-abbr.left { text-align: right; }
+        .quarter-card .q-scores .team-abbr.right { text-align: left; }
+
+        .quarter-card .q-scores input {
+            width: 46px;
+            padding: 6px 4px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: inherit;
+            background: #0d1230;
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .quarter-card .q-scores input:focus {
+            border-color: var(--gold);
+        }
+
+        .quarter-card .q-scores .score-dash {
+            color: var(--text-dim);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .quarter-card .q-winner {
+            font-size: 0.82rem;
+            color: var(--gold);
+            font-weight: 600;
+            min-height: 1.4em;
+            margin-bottom: 2px;
+        }
+
+        .quarter-card .q-payout {
+            font-size: 0.75rem;
+            color: var(--accent-green);
+            margin-top: 2px;
+        }
+
+        /* ── Footer ──────────────────────────────────────────── */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-dim);
+            font-size: 0.75rem;
+            border-top: 1px solid var(--border);
+            width: 100%;
+            margin-top: auto;
+        }
+
+        /* ── Responsive ──────────────────────────────────────── */
+        @media (max-width: 700px) {
+            .grid-container {
+                grid-template-columns: 42px repeat(10, 1fr);
+                gap: 1px;
+            }
+            .grid-wrapper { padding-left: 40px; }
+            .team-left-label { left: -2px; font-size: 0.8rem; }
+            .square { font-size: 0.52rem; min-height: 46px; padding: 2px; }
+            .num-header { font-size: 0.85rem; }
+            .team-label-top { font-size: 0.8rem; padding: 6px; }
+            .header h1 { font-size: 1.5rem; }
+            .scoring-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* ── Print ───────────────────────────────────────────── */
+        @media print {
+            body { background: white; color: #222; }
+            .header { background: none; }
+            .header h1 { background: none; -webkit-text-fill-color: #333; color: #333; }
+            .controls { display: none; }
+            .lock-status { display: none; }
+            .square {
+                border: 1px solid #ccc; color: #222;
+                -webkit-print-color-adjust: exact; print-color-adjust: exact;
+            }
+            .grid-container { border-color: #333; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>MOE Super Bowl Squares</h1>
+    <div class="subtitle">Super Bowl LX</div>
+    <div class="game-info">
+        <span id="team-afc-full">Kansas City Chiefs</span>
+        <span class="vs">vs</span>
+        <span id="team-nfc-full">Washington Commanders</span>
+    </div>
+    <div class="game-date">Sunday, February 8, 2026 &bull; Levi's Stadium, Santa Clara, CA</div>
+
+    <div class="pot-info">
+        <div class="pot-item">
+            <div class="label">Total Collected</div>
+            <div class="value" id="total-pot">$900</div>
+        </div>
+        <div class="pot-item">
+            <div class="label">Prize Pool (50%)</div>
+            <div class="value" id="prize-pool">$450</div>
+        </div>
+        <div class="pot-item">
+            <div class="label">Men of Emanuel (50%)</div>
+            <div class="value" id="moe-share">$450</div>
+        </div>
+        <div class="pot-item">
+            <div class="label">Per Square</div>
+            <div class="value">$9</div>
+        </div>
+        <div class="pot-item">
+            <div class="label">Squares Sold</div>
+            <div class="value">100</div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn btn-shuffle" id="btn-shuffle" onclick="doShuffle()">Shuffle</button>
+        <button class="btn btn-lock" id="btn-lock" onclick="doLock()">Lock In</button>
+    </div>
+    <div class="lock-status" id="lock-status"></div>
+</div>
+
+<div class="grid-wrapper">
+    <div class="team-left-label" id="team-left-label"></div>
+    <div class="grid-container" id="grid"></div>
+</div>
+
+<div class="legend-section">
+    <div class="legend-title">Participants</div>
+    <div class="legend-grid" id="legend"></div>
+</div>
+
+<div class="scoring-section">
+    <div class="scoring-title">Quarter Results</div>
+    <div class="scoring-grid" id="scoring"></div>
+</div>
+
+<div class="footer">
+    MOE Super Bowl Squares &bull; Super Bowl LX &bull; 2026
+</div>
+
+<script>
+// ================================================================
+// CONFIGURATION
+// ================================================================
+const CONFIG = {
+    teamTop:  "Chiefs",
+    teamLeft: "Commanders",
+    teamTopAbbr:  "KC",
+    teamLeftAbbr: "WSH",
+    pricePerSquare: 9,
+    seed: 2026,
+    payouts: { Q1: 0.20, Q2: 0.20, Q3: 0.20, Final: 0.40 }
+};
+
+// ================================================================
+// RAW PARTICIPANT DATA  [Name, $ Amount, # Squares]
+// ================================================================
+const rawEntries = [
+    ["David Shapiro",     0, 0],
+    ["Barry Shapiro",    36, 4],
+    ["Bill LeGrand",     36, 4],
+    ["Stephen Ochs",     18, 2],
+    ["Robert Goldsobel", 36, 4],
+    ["Erick Searfoss",   36, 4],
+    ["Jeffrey Lane",     18, 2],
+    ["Ben Smith",        36, 4],
+    ["Mel Kessler",      18, 2],
+    ["David Shapiro",    54, 6],
+    ["Mark Wolf",        36, 4],
+    ["Peter Brown",      18, 2],
+    ["David Hannes",     18, 2],
+    ["Sid Plait",        36, 4],
+    ["Scott Mason",      18, 2],
+    ["Michael Obstein",  72, 8],
+    ["Arnold Bedak",     36, 4],
+    ["The Weiss",        54, 6],
+    ["Adam Wilkens",     72, 8],
+    ["Brandon Bagley",  108, 12],
+    ["Stephen Ochs",     18, 2],
+    ["Jonathan Andes",   36, 4],
+    ["Sid Plait",        36, 4],
+    ["Robert Goldsobel", 36, 4],
+    ["David Shapiro",    18, 2],
+];
+
+// ================================================================
+// CONSOLIDATE
+// ================================================================
+const pMap = {};
+rawEntries.forEach(([name, amount, squares]) => {
+    if (!pMap[name]) pMap[name] = { name, totalAmount: 0, totalSquares: 0 };
+    pMap[name].totalAmount  += amount;
+    pMap[name].totalSquares += squares;
+});
+const participants   = Object.values(pMap).sort((a, b) => b.totalSquares - a.totalSquares);
+const totalSqSold    = participants.reduce((s, p) => s + p.totalSquares, 0);
+const cellsPerSquare = 100 / totalSqSold;
+
+const COLORS = [
+    "#2563eb","#dc2626","#16a34a","#d97706","#7c3aed",
+    "#db2777","#0891b2","#ea580c","#4f46e5","#059669",
+    "#9333ea","#e11d48","#0d9488","#ca8a04","#6366f1",
+    "#be185d","#1d4ed8","#b91c1c"
+];
+participants.forEach((p, i) => { p.color = COLORS[i % COLORS.length]; });
+
+// ================================================================
+// RNG
+// ================================================================
+let currentSeed = CONFIG.seed;
+
+function mulberry32(seed) {
+    return () => {
+        seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+        let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+        t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+}
+
+function shuffleWith(arr, rng) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(rng() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+// ================================================================
+// STATE
+// ================================================================
+let isLocked = false;
+let cells    = [];
+let colNums  = [];
+let rowNums  = [];
+
+const STORAGE_KEY = "moe_sb_squares";
+
+function saveState() {
+    const state = {
+        locked: isLocked,
+        seed: currentSeed,
+        scores: {}
+    };
+    ["Q1","Q2","Q3","Final"].forEach(q => {
+        const topInput  = document.getElementById(`score-top-${q}`);
+        const leftInput = document.getElementById(`score-left-${q}`);
+        if (topInput && leftInput) {
+            state.scores[q] = { top: topInput.value, left: leftInput.value };
+        }
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function loadState() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) return JSON.parse(raw);
+    } catch(e) {}
+    return null;
+}
+
+// ================================================================
+// GENERATE LAYOUT from a given seed
+// ================================================================
+function generateLayout(seed) {
+    const rng = mulberry32(seed);
+
+    let c = [];
+    participants.forEach(p => {
+        for (let i = 0; i < p.totalSquares * cellsPerSquare; i++) c.push(p);
+    });
+    cells   = shuffleWith(c, rng);
+    colNums = shuffleWith([0,1,2,3,4,5,6,7,8,9], rng);
+    rowNums = shuffleWith([0,1,2,3,4,5,6,7,8,9], rng);
+}
+
+// ================================================================
+// RENDER GRID
+// ================================================================
+function shortName(name) {
+    const parts = name.split(" ");
+    if (parts.length >= 2 && parts[0] !== "The")
+        return parts[0][0] + ". " + parts.slice(1).join(" ");
+    return name;
+}
+
+function renderGrid() {
+    const grid = document.getElementById("grid");
+    grid.innerHTML = "";
+
+    // Corner
+    const corner = document.createElement("div");
+    corner.className = "corner";
+    corner.textContent = "\uD83C\uDFC8";
+    corner.style.gridRow = "1 / 3";
+    corner.style.gridColumn = "1";
+    grid.appendChild(corner);
+
+    // Top team label
+    const topLabel = document.createElement("div");
+    topLabel.className = "team-label-top";
+    topLabel.textContent = CONFIG.teamTop;
+    grid.appendChild(topLabel);
+
+    // Column numbers
+    colNums.forEach((n, i) => {
+        const el = document.createElement("div");
+        el.className = "num-header";
+        el.style.gridRow = "2";
+        el.style.gridColumn = String(i + 2);
+        el.textContent = n;
+        grid.appendChild(el);
+    });
+
+    // Row numbers
+    rowNums.forEach((n, i) => {
+        const el = document.createElement("div");
+        el.className = "num-header";
+        el.style.gridRow = String(i + 3);
+        el.style.gridColumn = "1";
+        el.textContent = n;
+        grid.appendChild(el);
+    });
+
+    // Squares
+    for (let r = 0; r < 10; r++) {
+        for (let c = 0; c < 10; c++) {
+            const p  = cells[r * 10 + c];
+            const el = document.createElement("div");
+            el.className = "square";
+            el.dataset.row = r;
+            el.dataset.col = c;
+            el.style.gridRow    = String(r + 3);
+            el.style.gridColumn = String(c + 2);
+            el.style.background = `linear-gradient(145deg, ${p.color}ee, ${p.color}bb)`;
+
+            const span = document.createElement("span");
+            span.className = "name";
+            span.textContent = shortName(p.name);
+            el.appendChild(span);
+
+            el.title = `${p.name}\n${p.totalSquares} squares ($${p.totalAmount})\nCol ${colNums[c]}  /  Row ${rowNums[r]}`;
+            grid.appendChild(el);
+        }
+    }
+
+    // Left label
+    document.getElementById("team-left-label").textContent = CONFIG.teamLeft;
+}
+
+// ================================================================
+// RENDER LEGEND
+// ================================================================
+function renderLegend() {
+    const legend = document.getElementById("legend");
+    legend.innerHTML = "";
+    participants.forEach(p => {
+        const item = document.createElement("div");
+        item.className = "legend-item";
+        item.innerHTML = `
+            <div class="legend-swatch" style="background:${p.color}"></div>
+            <span class="legend-name">${p.name}</span>
+            <span class="legend-count">${p.totalSquares} sq &middot; $${p.totalAmount}</span>`;
+        legend.appendChild(item);
+    });
+}
+
+// ================================================================
+// RENDER SCORING CARDS
+// ================================================================
+const totalPot  = totalSqSold * CONFIG.pricePerSquare;
+const prizePool = totalPot * 0.5;
+const moeShare  = totalPot * 0.5;
+
+function renderScoring() {
+    document.getElementById("total-pot").textContent   = "$" + totalPot.toLocaleString();
+    document.getElementById("prize-pool").textContent  = "$" + prizePool.toLocaleString();
+    document.getElementById("moe-share").textContent   = "$" + moeShare.toLocaleString();
+
+    const scoring = document.getElementById("scoring");
+    scoring.innerHTML = "";
+
+    ["Q1","Q2","Q3","Final"].forEach(q => {
+        const payout = Math.round(prizePool * CONFIG.payouts[q]);
+        const card = document.createElement("div");
+        card.className = "quarter-card";
+        card.innerHTML = `
+            <div class="q-label">${q === "Final" ? "Final Score" : q}</div>
+            <div class="q-scores">
+                <span class="team-abbr left">${CONFIG.teamTopAbbr}</span>
+                <input type="number" id="score-top-${q}" min="0" max="99" placeholder="—"
+                       oninput="onScoreChange('${q}')" />
+                <span class="score-dash">&ndash;</span>
+                <input type="number" id="score-left-${q}" min="0" max="99" placeholder="—"
+                       oninput="onScoreChange('${q}')" />
+                <span class="team-abbr right">${CONFIG.teamLeftAbbr}</span>
+            </div>
+            <div class="q-winner" id="winner-${q}">&mdash;</div>
+            <div class="q-payout">$${payout.toLocaleString()}</div>`;
+        scoring.appendChild(card);
+    });
+}
+
+// ================================================================
+// SCORE → WINNER LOOKUP
+// ================================================================
+function onScoreChange(quarter) {
+    const topVal  = document.getElementById(`score-top-${quarter}`).value;
+    const leftVal = document.getElementById(`score-left-${quarter}`).value;
+    const winnerEl = document.getElementById(`winner-${quarter}`);
+
+    // Clear old highlights for this quarter
+    clearHighlights();
+
+    if (topVal === "" || leftVal === "") {
+        winnerEl.textContent = "\u2014";  // em dash
+        saveState();
+        return;
+    }
+
+    const topDigit  = parseInt(topVal, 10) % 10;
+    const leftDigit = parseInt(leftVal, 10) % 10;
+
+    // Find the column index where colNums[c] === topDigit
+    const colIdx = colNums.indexOf(topDigit);
+    // Find the row index where rowNums[r] === leftDigit
+    const rowIdx = rowNums.indexOf(leftDigit);
+
+    if (colIdx === -1 || rowIdx === -1) {
+        winnerEl.textContent = "\u2014";
+        saveState();
+        return;
+    }
+
+    const winner = cells[rowIdx * 10 + colIdx];
+    winnerEl.textContent = winner.name;
+    winnerEl.style.color = winner.color;
+
+    // Highlight the winning square
+    const sq = document.querySelector(`.square[data-row="${rowIdx}"][data-col="${colIdx}"]`);
+    if (sq) sq.classList.add("highlight");
+
+    saveState();
+}
+
+function clearHighlights() {
+    document.querySelectorAll(".square.highlight").forEach(el => el.classList.remove("highlight"));
+}
+
+// Recheck all quarters (e.g. after a shuffle)
+function recheckAllScores() {
+    ["Q1","Q2","Q3","Final"].forEach(q => onScoreChange(q));
+}
+
+// ================================================================
+// SHUFFLE & LOCK
+// ================================================================
+function doShuffle() {
+    if (isLocked) return;
+    currentSeed = Date.now();         // new random seed each click
+    generateLayout(currentSeed);
+    renderGrid();
+    clearHighlights();
+    recheckAllScores();
+    saveState();
+}
+
+function doLock() {
+    if (isLocked) {
+        // Unlock
+        isLocked = false;
+        updateLockUI();
+        saveState();
+    } else {
+        // Confirm before locking
+        if (confirm("Lock in the current grid? You can unlock later if needed.")) {
+            isLocked = true;
+            updateLockUI();
+            saveState();
+        }
+    }
+}
+
+function updateLockUI() {
+    const btnShuffle = document.getElementById("btn-shuffle");
+    const btnLock    = document.getElementById("btn-lock");
+    const statusEl   = document.getElementById("lock-status");
+
+    if (isLocked) {
+        btnShuffle.disabled = true;
+        btnLock.textContent = "Unlock";
+        btnLock.className   = "btn btn-locked";
+        statusEl.textContent = "GRID IS LOCKED IN";
+        statusEl.className   = "lock-status is-locked";
+    } else {
+        btnShuffle.disabled = false;
+        btnLock.textContent = "Lock In";
+        btnLock.className   = "btn btn-lock";
+        statusEl.textContent = "";
+        statusEl.className   = "lock-status";
+    }
+}
+
+// ================================================================
+// INIT — restore saved state or generate fresh
+// ================================================================
+function init() {
+    const saved = loadState();
+
+    if (saved && saved.locked) {
+        currentSeed = saved.seed;
+        isLocked = true;
+    } else if (saved) {
+        currentSeed = saved.seed;
+        isLocked = false;
+    }
+
+    generateLayout(currentSeed);
+    renderGrid();
+    renderLegend();
+    renderScoring();
+    updateLockUI();
+
+    // Restore saved scores
+    if (saved && saved.scores) {
+        ["Q1","Q2","Q3","Final"].forEach(q => {
+            if (saved.scores[q]) {
+                const topInput  = document.getElementById(`score-top-${q}`);
+                const leftInput = document.getElementById(`score-left-${q}`);
+                if (topInput)  topInput.value  = saved.scores[q].top  || "";
+                if (leftInput) leftInput.value = saved.scores[q].left || "";
+            }
+        });
+        recheckAllScores();
+    }
+}
+
+init();
+</script>
+</body>
+</html>
