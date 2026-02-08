@@ -38,6 +38,13 @@
             background: linear-gradient(180deg, #0f1535 0%, var(--bg-dark) 100%);
         }
 
+        .header-logo {
+            width: 220px;
+            height: auto;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 12px rgba(201, 168, 76, 0.4));
+        }
+
         .header h1 {
             font-size: 2.4rem;
             font-weight: 800;
@@ -174,6 +181,340 @@
             font-weight: 700;
         }
 
+        /* ── Tabs ────────────────────────────────────────────── */
+        .tabs-container {
+            max-width: 920px;
+            width: 100%;
+            margin: 14px auto 0;
+            padding: 0 10px;
+        }
+
+        .tabs-nav {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 4px;
+        }
+
+        .tab-button {
+            padding: 8px 20px;
+            background: transparent;
+            border: none;
+            border-radius: 6px 6px 0 0;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-button:hover {
+            color: var(--gold);
+            background: rgba(201, 168, 76, 0.1);
+        }
+
+        .tab-button.active {
+            color: var(--gold);
+            background: rgba(201, 168, 76, 0.15);
+            border-bottom: 2px solid var(--gold);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .admin-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .admin-buttons {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .test-mode-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .test-inputs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .test-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .test-input-group label {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .test-input-group input,
+        .test-input-group select {
+            padding: 8px 12px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.95rem;
+            width: 120px;
+        }
+
+        .test-input-group input:focus,
+        .test-input-group select:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .test-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* ── Live Scoreboard ─────────────────────────────────── */
+        .live-scoreboard {
+            max-width: 920px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        .live-card {
+            background: var(--bg-card);
+            border: 2px solid var(--accent-green);
+            border-radius: 10px;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            position: relative;
+        }
+
+        .live-badge {
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: var(--accent-red);
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            padding: 3px 10px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            animation: live-pulse 1.5s infinite;
+        }
+
+        @keyframes live-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .live-team {
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .live-team-logo {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            margin-bottom: 4px;
+        }
+
+        .live-team .live-team-name {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+        }
+
+        .live-team .live-team-score {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--text);
+            line-height: 1;
+        }
+
+        .live-team .live-team-last-digit {
+            font-size: 0.7rem;
+            color: var(--gold);
+            margin-top: 2px;
+        }
+
+        .live-center {
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .live-game-time {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            margin-bottom: 4px;
+        }
+
+        .live-center .live-period {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 1px;
+        }
+
+        .live-center .live-clock {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .live-center .live-status-text {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            margin-top: 2px;
+        }
+
+        .live-situation {
+            font-size: 0.7rem;
+            color: var(--silver);
+            margin-top: 4px;
+            line-height: 1.3;
+        }
+
+        .live-winner-banner {
+            width: 100%;
+            text-align: center;
+            margin-top: 6px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+
+        .live-winner-banner .lw-label {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .live-winner-banner .lw-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        .live-quarter-winners {
+            width: 100%;
+            margin-top: 6px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+
+        .lqw-title {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .lqw-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .lqw-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(10, 14, 39, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px 4px;
+            gap: 3px;
+        }
+
+        .lqw-item.completed {
+            border-color: var(--gold);
+        }
+
+        .lqw-item.active {
+            border-color: var(--accent-green);
+        }
+
+        .lqw-label {
+            font-size: 0.6rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .lqw-score {
+            font-size: 0.7rem;
+            color: var(--silver);
+            font-weight: 600;
+        }
+
+        .lqw-name {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-dim);
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .lqw-item.completed .lqw-name {
+            color: var(--gold);
+        }
+
+        .lqw-payout {
+            font-size: 0.65rem;
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        .live-error {
+            text-align: center;
+            color: var(--accent-red);
+            font-size: 0.8rem;
+            padding: 10px;
+        }
+
         /* ── Grid ────────────────────────────────────────────── */
         .grid-wrapper {
             margin: 14px auto;
@@ -183,11 +524,31 @@
             position: relative;
         }
 
+        .team-logo-top {
+            display: block;
+            width: 96px;
+            height: 96px;
+            object-fit: contain;
+            margin: 0 auto 12px;
+            filter: drop-shadow(0 2px 8px rgba(201, 168, 76, 0.35));
+        }
+
+        .team-logo-left {
+            position: absolute;
+            left: 2px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 72px;
+            height: 72px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 8px rgba(201, 168, 76, 0.35));
+        }
+
         .team-left-label {
             position: absolute;
             left: 4px;
             top: 50%;
-            transform: translateY(-50%) rotate(-90deg);
+            transform: translateY(-50%) rotate(-90deg) translateX(44px);
             font-weight: 700;
             font-size: 1.05rem;
             letter-spacing: 3px;
@@ -278,6 +639,18 @@
             z-index: 5;
         }
 
+        .square.live-highlight {
+            outline: 3px solid var(--accent-green);
+            outline-offset: -2px;
+            z-index: 6;
+            animation: live-square-pulse 2s infinite;
+        }
+
+        @keyframes live-square-pulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(46,204,113,0.4); }
+            50% { box-shadow: 0 0 28px rgba(46,204,113,0.8); }
+        }
+
         /* ── Legend ───────────────────────────────────────────── */
         .legend-section {
             max-width: 920px;
@@ -312,6 +685,13 @@
             border-radius: 6px;
             padding: 6px 14px;
             font-size: 0.82rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .legend-item:hover {
+            border-color: var(--gold);
+            transform: translateY(-1px);
         }
 
         .legend-swatch {
@@ -322,7 +702,28 @@
         }
 
         .legend-name { color: var(--text); font-weight: 600; }
-        .legend-count { color: var(--text-dim); font-size: 0.75rem; }
+
+        .legend-item.legend-active {
+            border-color: var(--gold);
+            box-shadow: 0 0 10px rgba(201, 168, 76, 0.4);
+            background: #1c2450;
+        }
+
+        .square.legend-highlight {
+            outline: 3px solid #fff;
+            outline-offset: -2px;
+            z-index: 7;
+            animation: legend-pulse 1.5s infinite;
+        }
+
+        @keyframes legend-pulse {
+            0%, 100% { box-shadow: 0 0 8px rgba(255,255,255,0.4); }
+            50% { box-shadow: 0 0 22px rgba(255,255,255,0.8); }
+        }
+
+        .square.legend-dimmed {
+            opacity: 0.25;
+        }
 
         /* ── Scoring / Payouts ───────────────────────────────── */
         .scoring-section {
@@ -354,6 +755,11 @@
             border-radius: 8px;
             padding: 16px;
             text-align: center;
+            transition: border-color 0.3s;
+        }
+
+        .quarter-card.q-active {
+            border-color: var(--accent-green);
         }
 
         .quarter-card .q-label {
@@ -402,6 +808,11 @@
             border-color: var(--gold);
         }
 
+        .quarter-card .q-scores input.live-filled {
+            border-color: var(--accent-green);
+            background: #0d1a1a;
+        }
+
         .quarter-card .q-scores .score-dash {
             color: var(--text-dim);
             font-weight: 700;
@@ -446,6 +857,8 @@
             .team-label-top { font-size: 0.8rem; padding: 6px; }
             .header h1 { font-size: 1.5rem; }
             .scoring-grid { grid-template-columns: repeat(2, 1fr); }
+            .live-team .live-team-score { font-size: 2rem; }
+            .lqw-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
         /* ── Print ───────────────────────────────────────────── */
@@ -453,8 +866,10 @@
             body { background: white; color: #222; }
             .header { background: none; }
             .header h1 { background: none; -webkit-text-fill-color: #333; color: #333; }
+            .tabs-container { display: none; }
             .controls { display: none; }
             .lock-status { display: none; }
+            .live-scoreboard { display: none !important; }
             .square {
                 border: 1px solid #ccc; color: #222;
                 -webkit-print-color-adjust: exact; print-color-adjust: exact;
@@ -466,12 +881,13 @@
 <body>
 
 <div class="header">
+    <img src="moe-logo.png" alt="Men of Emanuel" class="header-logo" />
     <h1>MOE Super Bowl Squares</h1>
     <div class="subtitle">Super Bowl LX</div>
     <div class="game-info">
-        <span id="team-afc-full">Kansas City Chiefs</span>
+        <span id="team-afc-full">New England Patriots</span>
         <span class="vs">vs</span>
-        <span id="team-nfc-full">Washington Commanders</span>
+        <span id="team-nfc-full">Seattle Seahawks</span>
     </div>
     <div class="game-date">Sunday, February 8, 2026 &bull; Levi's Stadium, Santa Clara, CA</div>
 
@@ -497,15 +913,119 @@
             <div class="value">100</div>
         </div>
     </div>
+</div>
 
-    <div class="controls">
-        <button class="btn btn-shuffle" id="btn-shuffle" onclick="doShuffle()">Shuffle</button>
-        <button class="btn btn-lock" id="btn-lock" onclick="doLock()">Lock In</button>
+<div class="tabs-container">
+    <div class="tabs-nav">
+        <button class="tab-button active" onclick="switchTab('live')">Live Score</button>
+        <button class="tab-button" onclick="switchTab('admin')">Admin</button>
     </div>
-    <div class="lock-status" id="lock-status"></div>
+
+    <div id="tab-live" class="tab-content active">
+        <div class="live-scoreboard" id="live-scoreboard">
+            <div class="live-card" id="live-card">
+                <div class="live-badge">LIVE</div>
+                <div class="live-team" id="live-team-top">
+                    <img class="live-team-logo" src="https://a.espncdn.com/i/teamlogos/nfl/500/ne.png" alt="NE" />
+                    <div class="live-team-name" id="live-name-top">NE</div>
+                    <div class="live-team-score" id="live-score-top">--</div>
+                    <div class="live-team-last-digit">last digit: <strong id="live-digit-top">-</strong></div>
+                </div>
+                <div class="live-center">
+                    <div class="live-game-time" id="live-game-time"></div>
+                    <div class="live-period" id="live-period">--</div>
+                    <div class="live-clock" id="live-clock">--:--</div>
+                    <div class="live-status-text" id="live-status-text">Connecting...</div>
+                    <div class="live-situation" id="live-situation"></div>
+                </div>
+                <div class="live-team" id="live-team-left">
+                    <img class="live-team-logo" src="https://a.espncdn.com/i/teamlogos/nfl/500/sea.png" alt="SEA" />
+                    <div class="live-team-name" id="live-name-left">SEA</div>
+                    <div class="live-team-score" id="live-score-left">--</div>
+                    <div class="live-team-last-digit">last digit: <strong id="live-digit-left">-</strong></div>
+                </div>
+                <div class="live-winner-banner">
+                    <div class="lw-label">Currently Winning Square</div>
+                    <div class="lw-name" id="live-current-winner">--</div>
+                </div>
+                <div class="live-quarter-winners" id="live-quarter-winners">
+                    <div class="lqw-title">Quarter Winners</div>
+                    <div class="lqw-grid">
+                        <div class="lqw-item" id="lqw-Q1">
+                            <span class="lqw-label">Q1</span>
+                            <span class="lqw-score" id="lqw-score-Q1"></span>
+                            <span class="lqw-name" id="lqw-name-Q1">--</span>
+                            <span class="lqw-payout" id="lqw-payout-Q1"></span>
+                        </div>
+                        <div class="lqw-item" id="lqw-Q2">
+                            <span class="lqw-label">Q2</span>
+                            <span class="lqw-score" id="lqw-score-Q2"></span>
+                            <span class="lqw-name" id="lqw-name-Q2">--</span>
+                            <span class="lqw-payout" id="lqw-payout-Q2"></span>
+                        </div>
+                        <div class="lqw-item" id="lqw-Q3">
+                            <span class="lqw-label">Q3</span>
+                            <span class="lqw-score" id="lqw-score-Q3"></span>
+                            <span class="lqw-name" id="lqw-name-Q3">--</span>
+                            <span class="lqw-payout" id="lqw-payout-Q3"></span>
+                        </div>
+                        <div class="lqw-item" id="lqw-Final">
+                            <span class="lqw-label">Final</span>
+                            <span class="lqw-score" id="lqw-score-Final"></span>
+                            <span class="lqw-name" id="lqw-name-Final">--</span>
+                            <span class="lqw-payout" id="lqw-payout-Final"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-admin" class="tab-content">
+        <div class="admin-controls">
+            <div class="admin-buttons">
+                <button class="btn btn-shuffle" id="btn-shuffle" onclick="doShuffle()">Shuffle</button>
+                <button class="btn btn-lock" id="btn-lock" onclick="doLock()">Lock In</button>
+            </div>
+            <div class="lock-status" id="lock-status"></div>
+            
+            <div class="test-mode-section">
+                <h3 style="color: var(--gold); margin-bottom: 10px; font-size: 1rem;">Test Live Score</h3>
+                <p style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 10px;">Simulate different scores to test the live scoreboard</p>
+                <div class="test-inputs">
+                    <div class="test-input-group">
+                        <label>NE Score:</label>
+                        <input type="number" id="test-score-top" min="0" max="99" placeholder="0" />
+                    </div>
+                    <div class="test-input-group">
+                        <label>SEA Score:</label>
+                        <input type="number" id="test-score-left" min="0" max="99" placeholder="0" />
+                    </div>
+                    <div class="test-input-group">
+                        <label>Quarter:</label>
+                        <select id="test-quarter">
+                            <option value="0">Pre-game</option>
+                            <option value="1">Q1</option>
+                            <option value="2">Q2</option>
+                            <option value="3">Halftime</option>
+                            <option value="4">Q3</option>
+                            <option value="5">Q4</option>
+                            <option value="6">Final</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="test-buttons">
+                    <button class="btn btn-shuffle" onclick="applyTestScore()">Apply Test Score</button>
+                    <button class="btn btn-lock" onclick="clearTestMode()">Clear & Use Live API</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="grid-wrapper">
+    <img class="team-logo-top" src="https://a.espncdn.com/i/teamlogos/nfl/500/ne.png" alt="Patriots" />
+    <img class="team-logo-left" src="https://a.espncdn.com/i/teamlogos/nfl/500/sea.png" alt="Seahawks" />
     <div class="team-left-label" id="team-left-label"></div>
     <div class="grid-container" id="grid"></div>
 </div>
@@ -529,13 +1049,16 @@
 // CONFIGURATION
 // ================================================================
 const CONFIG = {
-    teamTop:  "Chiefs",
-    teamLeft: "Commanders",
-    teamTopAbbr:  "KC",
-    teamLeftAbbr: "WSH",
+    teamTop:  "Patriots",
+    teamLeft: "Seahawks",
+    teamTopAbbr:  "NE",
+    teamLeftAbbr: "SEA",
     pricePerSquare: 9,
     seed: 2026,
-    payouts: { Q1: 0.20, Q2: 0.20, Q3: 0.20, Final: 0.40 }
+    payouts: { Q1: 0.20, Q2: 0.20, Q3: 0.20, Final: 0.40 },
+    // ESPN API — NFL scoreboard (public, CORS-friendly)
+    espnUrl: "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard",
+    pollInterval: 30000   // 30 seconds
 };
 
 // ================================================================
@@ -559,7 +1082,7 @@ const rawEntries = [
     ["Scott Mason",      18, 2],
     ["Michael Obstein",  72, 8],
     ["Arnold Bedak",     36, 4],
-    ["The Weiss",        54, 6],
+    ["T. Weiss",         54, 6],
     ["Adam Wilkens",     72, 8],
     ["Brandon Bagley",  108, 12],
     ["Stephen Ochs",     18, 2],
@@ -616,10 +1139,12 @@ function shuffleWith(arr, rng) {
 // ================================================================
 // STATE
 // ================================================================
-let isLocked = false;
-let cells    = [];
-let colNums  = [];
-let rowNums  = [];
+let isLocked   = false;
+let isLiveMode = false;
+let liveTimer  = null;
+let cells      = [];
+let colNums    = [];
+let rowNums    = [];
 
 const STORAGE_KEY = "moe_sb_squares";
 
@@ -630,8 +1155,8 @@ function saveState() {
         scores: {}
     };
     ["Q1","Q2","Q3","Final"].forEach(q => {
-        const topInput  = document.getElementById(`score-top-${q}`);
-        const leftInput = document.getElementById(`score-left-${q}`);
+        const topInput  = document.getElementById("score-top-" + q);
+        const leftInput = document.getElementById("score-left-" + q);
         if (topInput && leftInput) {
             state.scores[q] = { top: topInput.value, left: leftInput.value };
         }
@@ -652,7 +1177,6 @@ function loadState() {
 // ================================================================
 function generateLayout(seed) {
     const rng = mulberry32(seed);
-
     let c = [];
     participants.forEach(p => {
         for (let i = 0; i < p.totalSquares * cellsPerSquare; i++) c.push(p);
@@ -660,6 +1184,18 @@ function generateLayout(seed) {
     cells   = shuffleWith(c, rng);
     colNums = shuffleWith([0,1,2,3,4,5,6,7,8,9], rng);
     rowNums = shuffleWith([0,1,2,3,4,5,6,7,8,9], rng);
+}
+
+// ================================================================
+// LOOKUP — given two scores, find the winning participant
+// ================================================================
+function lookupWinner(topScore, leftScore) {
+    const topDigit  = topScore % 10;
+    const leftDigit = leftScore % 10;
+    const colIdx = colNums.indexOf(topDigit);
+    const rowIdx = rowNums.indexOf(leftDigit);
+    if (colIdx === -1 || rowIdx === -1) return null;
+    return { participant: cells[rowIdx * 10 + colIdx], row: rowIdx, col: colIdx };
 }
 
 // ================================================================
@@ -676,7 +1212,6 @@ function renderGrid() {
     const grid = document.getElementById("grid");
     grid.innerHTML = "";
 
-    // Corner
     const corner = document.createElement("div");
     corner.className = "corner";
     corner.textContent = "\uD83C\uDFC8";
@@ -684,13 +1219,11 @@ function renderGrid() {
     corner.style.gridColumn = "1";
     grid.appendChild(corner);
 
-    // Top team label
     const topLabel = document.createElement("div");
     topLabel.className = "team-label-top";
     topLabel.textContent = CONFIG.teamTop;
     grid.appendChild(topLabel);
 
-    // Column numbers
     colNums.forEach((n, i) => {
         const el = document.createElement("div");
         el.className = "num-header";
@@ -700,7 +1233,6 @@ function renderGrid() {
         grid.appendChild(el);
     });
 
-    // Row numbers
     rowNums.forEach((n, i) => {
         const el = document.createElement("div");
         el.className = "num-header";
@@ -710,7 +1242,6 @@ function renderGrid() {
         grid.appendChild(el);
     });
 
-    // Squares
     for (let r = 0; r < 10; r++) {
         for (let c = 0; c < 10; c++) {
             const p  = cells[r * 10 + c];
@@ -720,36 +1251,94 @@ function renderGrid() {
             el.dataset.col = c;
             el.style.gridRow    = String(r + 3);
             el.style.gridColumn = String(c + 2);
-            el.style.background = `linear-gradient(145deg, ${p.color}ee, ${p.color}bb)`;
+            el.style.background = "linear-gradient(145deg, " + p.color + "ee, " + p.color + "bb)";
 
             const span = document.createElement("span");
             span.className = "name";
             span.textContent = shortName(p.name);
             el.appendChild(span);
 
-            el.title = `${p.name}\n${p.totalSquares} squares ($${p.totalAmount})\nCol ${colNums[c]}  /  Row ${rowNums[r]}`;
+            el.title = p.name + "\n" + p.totalSquares + " squares ($" + p.totalAmount + ")\nCol " + colNums[c] + "  /  Row " + rowNums[r];
             grid.appendChild(el);
         }
     }
 
-    // Left label
     document.getElementById("team-left-label").textContent = CONFIG.teamLeft;
 }
 
 // ================================================================
 // RENDER LEGEND
 // ================================================================
+var activeLegendName = null;
+
+function getLastName(name) {
+    var parts = name.trim().split(" ");
+    if (parts[0] === "The") return parts.slice(1).join(" ");
+    return parts[parts.length - 1];
+}
+
 function renderLegend() {
     const legend = document.getElementById("legend");
     legend.innerHTML = "";
-    participants.forEach(p => {
+
+    // Sort participants alphabetically by last name
+    var sorted = [...participants].sort((a, b) => {
+        var lastA = getLastName(a.name).toLowerCase();
+        var lastB = getLastName(b.name).toLowerCase();
+        if (lastA < lastB) return -1;
+        if (lastA > lastB) return 1;
+        return a.name.localeCompare(b.name);
+    });
+
+    sorted.forEach(p => {
         const item = document.createElement("div");
         item.className = "legend-item";
-        item.innerHTML = `
-            <div class="legend-swatch" style="background:${p.color}"></div>
-            <span class="legend-name">${p.name}</span>
-            <span class="legend-count">${p.totalSquares} sq &middot; $${p.totalAmount}</span>`;
+        item.innerHTML =
+            '<div class="legend-swatch" style="background:' + p.color + '"></div>' +
+            '<span class="legend-name">' + shortName(p.name) + '</span>';
+        item.dataset.participant = p.name;
+        item.addEventListener("click", function() {
+            toggleLegendHighlight(p.name);
+        });
         legend.appendChild(item);
+    });
+}
+
+function toggleLegendHighlight(name) {
+    // Clear previous legend highlights
+    document.querySelectorAll(".square.legend-highlight, .square.legend-dimmed").forEach(function(el) {
+        el.classList.remove("legend-highlight");
+        el.classList.remove("legend-dimmed");
+    });
+    document.querySelectorAll(".legend-item.legend-active").forEach(function(el) {
+        el.classList.remove("legend-active");
+    });
+
+    // If clicking the same name again, just deactivate
+    if (activeLegendName === name) {
+        activeLegendName = null;
+        return;
+    }
+
+    activeLegendName = name;
+
+    // Highlight the legend item
+    document.querySelectorAll(".legend-item").forEach(function(el) {
+        if (el.dataset.participant === name) {
+            el.classList.add("legend-active");
+        }
+    });
+
+    // Highlight matching squares, dim the rest
+    document.querySelectorAll(".square").forEach(function(sq) {
+        var row = parseInt(sq.dataset.row, 10);
+        var col = parseInt(sq.dataset.col, 10);
+        var p = cells[row * 10 + col];
+        if (p && p.name === name) {
+            sq.classList.add("legend-highlight");
+        } else {
+            sq.classList.add("legend-dimmed");
+        }
     });
 }
 
@@ -768,76 +1357,103 @@ function renderScoring() {
     const scoring = document.getElementById("scoring");
     scoring.innerHTML = "";
 
-    ["Q1","Q2","Q3","Final"].forEach(q => {
+    ["Q1","Q2","Q3","Final"].forEach(function(q) {
         const payout = Math.round(prizePool * CONFIG.payouts[q]);
         const card = document.createElement("div");
         card.className = "quarter-card";
-        card.innerHTML = `
-            <div class="q-label">${q === "Final" ? "Final Score" : q}</div>
-            <div class="q-scores">
-                <span class="team-abbr left">${CONFIG.teamTopAbbr}</span>
-                <input type="number" id="score-top-${q}" min="0" max="99" placeholder="—"
-                       oninput="onScoreChange('${q}')" />
-                <span class="score-dash">&ndash;</span>
-                <input type="number" id="score-left-${q}" min="0" max="99" placeholder="—"
-                       oninput="onScoreChange('${q}')" />
-                <span class="team-abbr right">${CONFIG.teamLeftAbbr}</span>
-            </div>
-            <div class="q-winner" id="winner-${q}">&mdash;</div>
-            <div class="q-payout">$${payout.toLocaleString()}</div>`;
+        card.id = "card-" + q;
+        card.innerHTML =
+            '<div class="q-label">' + (q === "Final" ? "Final Score" : q) + '</div>' +
+            '<div class="q-scores">' +
+                '<span class="team-abbr left">' + CONFIG.teamTopAbbr + '</span>' +
+                '<input type="number" id="score-top-' + q + '" min="0" max="99" placeholder="\u2014"' +
+                '       oninput="onScoreChange(\'' + q + '\')" />' +
+                '<span class="score-dash">&ndash;</span>' +
+                '<input type="number" id="score-left-' + q + '" min="0" max="99" placeholder="\u2014"' +
+                '       oninput="onScoreChange(\'' + q + '\')" />' +
+                '<span class="team-abbr right">' + CONFIG.teamLeftAbbr + '</span>' +
+            '</div>' +
+            '<div class="q-winner" id="winner-' + q + '">&mdash;</div>' +
+            '<div class="q-payout">$' + payout.toLocaleString() + '</div>';
         scoring.appendChild(card);
     });
 }
 
 // ================================================================
-// SCORE → WINNER LOOKUP
+// SCORE → WINNER LOOKUP (manual entry)
 // ================================================================
 function onScoreChange(quarter) {
-    const topVal  = document.getElementById(`score-top-${quarter}`).value;
-    const leftVal = document.getElementById(`score-left-${quarter}`).value;
-    const winnerEl = document.getElementById(`winner-${quarter}`);
+    var topVal  = document.getElementById("score-top-" + quarter).value;
+    var leftVal = document.getElementById("score-left-" + quarter).value;
+    var winnerEl = document.getElementById("winner-" + quarter);
 
-    // Clear old highlights for this quarter
     clearHighlights();
 
     if (topVal === "" || leftVal === "") {
-        winnerEl.textContent = "\u2014";  // em dash
-        saveState();
-        return;
-    }
-
-    const topDigit  = parseInt(topVal, 10) % 10;
-    const leftDigit = parseInt(leftVal, 10) % 10;
-
-    // Find the column index where colNums[c] === topDigit
-    const colIdx = colNums.indexOf(topDigit);
-    // Find the row index where rowNums[r] === leftDigit
-    const rowIdx = rowNums.indexOf(leftDigit);
-
-    if (colIdx === -1 || rowIdx === -1) {
         winnerEl.textContent = "\u2014";
+        winnerEl.style.color = "";
         saveState();
+        reapplyAllHighlights();
         return;
     }
 
-    const winner = cells[rowIdx * 10 + colIdx];
-    winnerEl.textContent = winner.name;
-    winnerEl.style.color = winner.color;
-
-    // Highlight the winning square
-    const sq = document.querySelector(`.square[data-row="${rowIdx}"][data-col="${colIdx}"]`);
-    if (sq) sq.classList.add("highlight");
+    var result = lookupWinner(parseInt(topVal, 10), parseInt(leftVal, 10));
+    if (!result) {
+        winnerEl.textContent = "\u2014";
+        winnerEl.style.color = "";
+    } else {
+        winnerEl.textContent = result.participant.name;
+        winnerEl.style.color = result.participant.color;
+    }
 
     saveState();
+    reapplyAllHighlights();
 }
 
 function clearHighlights() {
-    document.querySelectorAll(".square.highlight").forEach(el => el.classList.remove("highlight"));
+    document.querySelectorAll(".square.highlight, .square.live-highlight").forEach(function(el) {
+        el.classList.remove("highlight");
+        el.classList.remove("live-highlight");
+    });
 }
 
-// Recheck all quarters (e.g. after a shuffle)
+function clearLegendHighlights() {
+    activeLegendName = null;
+    document.querySelectorAll(".square.legend-highlight, .square.legend-dimmed").forEach(function(el) {
+        el.classList.remove("legend-highlight");
+        el.classList.remove("legend-dimmed");
+    });
+    document.querySelectorAll(".legend-item.legend-active").forEach(function(el) {
+        el.classList.remove("legend-active");
+    });
+}
+
+// Re-highlight all quarters that have scores
+function reapplyAllHighlights() {
+    clearHighlights();
+    ["Q1","Q2","Q3","Final"].forEach(function(q) {
+        var topInput  = document.getElementById("score-top-" + q);
+        var leftInput = document.getElementById("score-left-" + q);
+        if (topInput && leftInput && topInput.value !== "" && leftInput.value !== "") {
+            var result = lookupWinner(parseInt(topInput.value, 10), parseInt(leftInput.value, 10));
+            if (result) {
+                var sq = document.querySelector('.square[data-row="' + result.row + '"][data-col="' + result.col + '"]');
+                if (sq) sq.classList.add("highlight");
+            }
+        }
+    });
+    // If live mode, also add the live highlight
+    if (isLiveMode && lastLiveTopScore !== null && lastLiveLeftScore !== null) {
+        var liveResult = lookupWinner(lastLiveTopScore, lastLiveLeftScore);
+        if (liveResult) {
+            var sq = document.querySelector('.square[data-row="' + liveResult.row + '"][data-col="' + liveResult.col + '"]');
+            if (sq) sq.classList.add("live-highlight");
+        }
+    }
+}
+
 function recheckAllScores() {
-    ["Q1","Q2","Q3","Final"].forEach(q => onScoreChange(q));
+    ["Q1","Q2","Q3","Final"].forEach(function(q) { onScoreChange(q); });
 }
 
 // ================================================================
@@ -845,22 +1461,37 @@ function recheckAllScores() {
 // ================================================================
 function doShuffle() {
     if (isLocked) return;
-    currentSeed = Date.now();         // new random seed each click
-    generateLayout(currentSeed);
+    
+    var times = prompt('How many times do you want to shuffle the grid?', '1');
+    if (times === null) return; // User canceled
+    
+    var shuffleCount = parseInt(times, 10);
+    if (isNaN(shuffleCount) || shuffleCount < 1) {
+        alert('Please enter a valid number (1 or greater)');
+        return;
+    }
+    
+    // Perform multiple shuffles
+    for (var i = 0; i < shuffleCount; i++) {
+        currentSeed = Date.now() + i; // Ensure different seed each time
+        generateLayout(currentSeed);
+    }
+    
     renderGrid();
     clearHighlights();
+    clearLegendHighlights();
     recheckAllScores();
     saveState();
+    
+    alert('Grid shuffled ' + shuffleCount + ' time' + (shuffleCount > 1 ? 's' : '') + '!');
 }
 
 function doLock() {
     if (isLocked) {
-        // Unlock
         isLocked = false;
         updateLockUI();
         saveState();
     } else {
-        // Confirm before locking
         if (confirm("Lock in the current grid? You can unlock later if needed.")) {
             isLocked = true;
             updateLockUI();
@@ -870,9 +1501,9 @@ function doLock() {
 }
 
 function updateLockUI() {
-    const btnShuffle = document.getElementById("btn-shuffle");
-    const btnLock    = document.getElementById("btn-lock");
-    const statusEl   = document.getElementById("lock-status");
+    var btnShuffle = document.getElementById("btn-shuffle");
+    var btnLock    = document.getElementById("btn-lock");
+    var statusEl   = document.getElementById("lock-status");
 
     if (isLocked) {
         btnShuffle.disabled = true;
@@ -890,10 +1521,488 @@ function updateLockUI() {
 }
 
 // ================================================================
-// INIT — restore saved state or generate fresh
+// TAB SWITCHING
+// ================================================================
+var isAdminAuthenticated = false;
+
+function switchTab(tabName) {
+    // Check if switching to admin tab
+    if (tabName === 'admin' && !isAdminAuthenticated) {
+        var password = prompt('Enter admin password:');
+        if (password !== 'admin') {
+            alert('Incorrect password');
+            return;
+        }
+        isAdminAuthenticated = true;
+    }
+
+    // Update tab buttons
+    var buttons = document.querySelectorAll('.tab-button');
+    buttons.forEach(function(btn) {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+
+    // Update tab content
+    var contents = document.querySelectorAll('.tab-content');
+    contents.forEach(function(content) {
+        content.classList.remove('active');
+    });
+    document.getElementById('tab-' + tabName).classList.add('active');
+
+    // Start/stop live score based on tab
+    if (tabName === 'live' && !isLiveMode) {
+        startLiveScore();
+    }
+}
+
+// ================================================================
+// TEST MODE
+// ================================================================
+var testMode = false;
+var testData = null;
+
+function applyTestScore() {
+    var topScore = parseInt(document.getElementById('test-score-top').value) || 0;
+    var leftScore = parseInt(document.getElementById('test-score-left').value) || 0;
+    var quarterVal = parseInt(document.getElementById('test-quarter').value) || 0;
+
+    testMode = true;
+    
+    // Create mock game data
+    testData = {
+        competitions: [{
+            competitors: [
+                {
+                    team: { abbreviation: 'NE' },
+                    score: topScore.toString(),
+                    linescores: generateMockLinescores(topScore, quarterVal)
+                },
+                {
+                    team: { abbreviation: 'SEA' },
+                    score: leftScore.toString(),
+                    linescores: generateMockLinescores(leftScore, quarterVal)
+                }
+            ],
+            status: {
+                type: { name: getStatusType(quarterVal) },
+                period: getPeriod(quarterVal),
+                displayClock: '5:23'
+            }
+        }]
+    };
+
+    updateLiveDisplay(testData);
+    alert('Test score applied! Switch to Live Score tab to see results.');
+}
+
+function generateMockLinescores(totalScore, quarter) {
+    // Distribute score across quarters
+    if (quarter === 0 || quarter === 3) return []; // Pre-game or halftime
+    if (quarter === 6) quarter = 4; // Final = 4 quarters
+    
+    var lines = [];
+    var remaining = totalScore;
+    for (var i = 0; i < Math.min(quarter, 4); i++) {
+        var pts = i < quarter - 1 ? Math.floor(remaining / (quarter - i)) : remaining;
+        lines.push({ value: pts });
+        remaining -= pts;
+    }
+    return lines;
+}
+
+function getStatusType(quarter) {
+    if (quarter === 0) return 'STATUS_SCHEDULED';
+    if (quarter === 3) return 'STATUS_HALFTIME';
+    if (quarter === 6) return 'STATUS_FINAL';
+    return 'STATUS_IN_PROGRESS';
+}
+
+function getPeriod(quarter) {
+    if (quarter === 0) return 0;
+    if (quarter === 3) return 2;
+    if (quarter === 6) return 4;
+    return quarter;
+}
+
+function clearTestMode() {
+    testMode = false;
+    testData = null;
+    document.getElementById('test-score-top').value = '';
+    document.getElementById('test-score-left').value = '';
+    document.getElementById('test-quarter').value = '0';
+    fetchLiveScore();
+    alert('Test mode cleared. Now using live ESPN API data.');
+}
+
+// ================================================================
+// LIVE SCORE — ESPN API integration
+// ================================================================
+var lastLiveTopScore  = null;
+var lastLiveLeftScore = null;
+
+function startLiveScore() {
+    if (isLiveMode) return; // Already running
+    isLiveMode = true;
+    document.getElementById("live-status-text").textContent = "Connecting...";
+    fetchLiveScore();
+    liveTimer = setInterval(fetchLiveScore, CONFIG.pollInterval);
+}
+
+function stopLiveScore() {
+    if (!isLiveMode) return;
+    isLiveMode = false;
+    if (liveTimer) { clearInterval(liveTimer); liveTimer = null; }
+    lastLiveTopScore = null;
+    lastLiveLeftScore = null;
+    reapplyAllHighlights();
+}
+
+async function fetchLiveScore() {
+    // If in test mode, use test data instead
+    if (testMode && testData) {
+        updateLiveDisplay(testData);
+        return;
+    }
+
+    try {
+        var response = await fetch(CONFIG.espnUrl);
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        var data = await response.json();
+        var game = findSuperBowl(data);
+        if (game) {
+            updateLiveDisplay(game);
+        } else {
+            document.getElementById("live-status-text").textContent = "Super Bowl not found on today's schedule";
+            document.getElementById("live-score-top").textContent = "--";
+            document.getElementById("live-score-left").textContent = "--";
+            document.getElementById("live-current-winner").textContent = "--";
+            document.getElementById("live-current-winner").style.color = "";
+        }
+    } catch (err) {
+        console.error("Live score fetch error:", err);
+        document.getElementById("live-status-text").textContent = "Error: " + err.message;
+    }
+}
+
+function findSuperBowl(data) {
+    if (!data.events) return null;
+
+    // Strategy 1: Look for event with "Super Bowl" in the name
+    for (var i = 0; i < data.events.length; i++) {
+        var ev = data.events[i];
+        if (ev.name && ev.name.toLowerCase().indexOf("super bowl") !== -1) {
+            return ev;
+        }
+        // Also check the notes/headline
+        if (ev.competitions && ev.competitions[0] && ev.competitions[0].notes) {
+            for (var n = 0; n < ev.competitions[0].notes.length; n++) {
+                if (ev.competitions[0].notes[n].headline &&
+                    ev.competitions[0].notes[n].headline.toLowerCase().indexOf("super bowl") !== -1) {
+                    return ev;
+                }
+            }
+        }
+    }
+
+    // Strategy 2: Look for our configured teams playing each other
+    for (var i = 0; i < data.events.length; i++) {
+        var ev = data.events[i];
+        if (!ev.competitions || !ev.competitions[0]) continue;
+        var comp = ev.competitions[0];
+        var abbrs = comp.competitors.map(function(c) {
+            return c.team.abbreviation.toUpperCase();
+        });
+        if (abbrs.indexOf(CONFIG.teamTopAbbr.toUpperCase()) !== -1 &&
+            abbrs.indexOf(CONFIG.teamLeftAbbr.toUpperCase()) !== -1) {
+            return ev;
+        }
+    }
+
+    // Strategy 3: If only one game today, use it
+    if (data.events.length === 1) return data.events[0];
+
+    return null;
+}
+
+function updateLiveDisplay(event) {
+    var comp   = event.competitions[0];
+    var status = comp.status;
+
+    // Find which competitor maps to our top/left teams
+    var topComp  = null;
+    var leftComp = null;
+    for (var i = 0; i < comp.competitors.length; i++) {
+        var c = comp.competitors[i];
+        var abbr = c.team.abbreviation.toUpperCase();
+        if (abbr === CONFIG.teamTopAbbr.toUpperCase()) topComp = c;
+        if (abbr === CONFIG.teamLeftAbbr.toUpperCase()) leftComp = c;
+    }
+
+    // If teams don't match abbreviations, assign by home/away
+    if (!topComp || !leftComp) {
+        topComp  = comp.competitors[0];
+        leftComp = comp.competitors[1];
+        // Update display names
+        document.getElementById("live-name-top").textContent  = topComp.team.abbreviation;
+        document.getElementById("live-name-left").textContent = leftComp.team.abbreviation;
+    } else {
+        document.getElementById("live-name-top").textContent  = CONFIG.teamTopAbbr;
+        document.getElementById("live-name-left").textContent = CONFIG.teamLeftAbbr;
+    }
+
+    var topScore  = parseInt(topComp.score, 10) || 0;
+    var leftScore = parseInt(leftComp.score, 10) || 0;
+
+    // Update score display
+    document.getElementById("live-score-top").textContent  = topScore;
+    document.getElementById("live-score-left").textContent = leftScore;
+    document.getElementById("live-digit-top").textContent  = topScore % 10;
+    document.getElementById("live-digit-left").textContent = leftScore % 10;
+
+    // Game status
+    var statusType = status.type.name;   // STATUS_SCHEDULED, STATUS_IN_PROGRESS, STATUS_END_PERIOD, STATUS_HALFTIME, STATUS_FINAL
+    var period     = status.period || 0;
+    var clock      = status.displayClock || "";
+
+    var periodLabels = { 1: "Q1", 2: "Q2", 3: "Q3", 4: "Q4", 5: "OT" };
+    var periodText = periodLabels[period] || ("Q" + period);
+
+    // Update game time/date info
+    var gameTimeEl = document.getElementById("live-game-time");
+    if (event.date) {
+        var gameDate = new Date(event.date);
+        var dateStr = gameDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        var timeStr = gameDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
+        gameTimeEl.textContent = dateStr + " at " + timeStr;
+    } else {
+        gameTimeEl.textContent = "";
+    }
+
+    // Update situation (possession, down, distance, etc.)
+    var situationEl = document.getElementById("live-situation");
+    var situationText = "";
+    
+    if (comp.situation) {
+        var sit = comp.situation;
+        if (sit.possession) {
+            var possTeam = sit.possession === topComp.team.id ? CONFIG.teamTopAbbr : CONFIG.teamLeftAbbr;
+            situationText = possTeam + " ball";
+        }
+        if (sit.downDistanceText) {
+            situationText += (situationText ? ", " : "") + sit.downDistanceText;
+        }
+        if (sit.possessionText) {
+            situationText += (situationText ? " at " : "") + sit.possessionText;
+        }
+    }
+    
+    // Add broadcasts info if available
+    if (comp.broadcasts && comp.broadcasts.length > 0 && statusType === "STATUS_SCHEDULED") {
+        var broadcastNames = comp.broadcasts.map(function(b) { return b.names ? b.names.join('/') : ''; }).filter(Boolean).join(', ');
+        if (broadcastNames) {
+            situationText = "Watch on: " + broadcastNames;
+        }
+    }
+
+    situationEl.textContent = situationText;
+
+    if (statusType === "STATUS_SCHEDULED") {
+        document.getElementById("live-period").textContent = "PRE";
+        document.getElementById("live-clock").textContent  = "";
+        document.getElementById("live-status-text").textContent = status.type.shortDetail || "Game has not started";
+        var badge = document.querySelector(".live-badge");
+        if (badge) badge.textContent = "PREGAME";
+    } else if (statusType === "STATUS_FINAL" || statusType === "STATUS_FINAL_OVERTIME") {
+        document.getElementById("live-period").textContent = "FINAL";
+        document.getElementById("live-clock").textContent  = "";
+        document.getElementById("live-status-text").textContent = "Game Over";
+        var badge = document.querySelector(".live-badge");
+        if (badge) { badge.textContent = "FINAL"; badge.style.animation = "none"; badge.style.background = "#666"; }
+    } else if (statusType === "STATUS_HALFTIME") {
+        document.getElementById("live-period").textContent = "HALF";
+        document.getElementById("live-clock").textContent  = "";
+        document.getElementById("live-status-text").textContent = "Halftime";
+    } else {
+        document.getElementById("live-period").textContent = periodText;
+        document.getElementById("live-clock").textContent  = clock;
+        document.getElementById("live-status-text").textContent = status.type.detail || "Live";
+        var badge = document.querySelector(".live-badge");
+        if (badge) { badge.textContent = "LIVE"; badge.style.animation = ""; badge.style.background = ""; }
+    }
+
+    // Update live winner (no winner before game starts)
+    lastLiveTopScore  = topScore;
+    lastLiveLeftScore = leftScore;
+
+    var winnerEl = document.getElementById("live-current-winner");
+    if (statusType === "STATUS_SCHEDULED") {
+        winnerEl.textContent = "--";
+        winnerEl.style.color = "";
+    } else {
+        var result = lookupWinner(topScore, leftScore);
+        if (result) {
+            winnerEl.textContent = result.participant.name;
+            winnerEl.style.color = result.participant.color;
+        } else {
+            winnerEl.textContent = "--";
+            winnerEl.style.color = "";
+        }
+    }
+
+    reapplyAllHighlights();
+
+    // Auto-fill quarter scores from linescores when a quarter is complete
+    autoFillQuarterScores(topComp, leftComp, period, statusType);
+
+    // Highlight the active quarter card
+    ["Q1","Q2","Q3","Final"].forEach(function(q) {
+        var card = document.getElementById("card-" + q);
+        if (card) card.classList.remove("q-active");
+    });
+
+    if (statusType === "STATUS_FINAL" || statusType === "STATUS_FINAL_OVERTIME") {
+        var fc = document.getElementById("card-Final");
+        if (fc) fc.classList.add("q-active");
+    } else if (period >= 1 && period <= 4) {
+        var qc = document.getElementById("card-Q" + period);
+        if (qc) qc.classList.add("q-active");
+    }
+
+    // Update quarter winners in live scoreboard
+    updateLiveQuarterWinners(topComp, leftComp, period, statusType);
+}
+
+function updateLiveQuarterWinners(topComp, leftComp, currentPeriod, statusType) {
+    var topLines  = topComp.linescores  || [];
+    var leftLines = leftComp.linescores || [];
+    var qMap = ["Q1","Q2","Q3","Final"];
+    var prizePool = CONFIG.pricePerSquare * 100 * 0.5;
+
+    for (var q = 0; q < 4; q++) {
+        var key = qMap[q];
+        var itemEl   = document.getElementById("lqw-" + key);
+        var nameEl   = document.getElementById("lqw-name-" + key);
+        var scoreEl  = document.getElementById("lqw-score-" + key);
+        var payoutEl = document.getElementById("lqw-payout-" + key);
+        if (!itemEl || !nameEl || !scoreEl || !payoutEl) continue;
+
+        var periodsNeeded = (q < 3) ? (q + 1) : topLines.length;
+
+        // Determine if quarter is complete
+        var isComplete = false;
+        if (q < 3) {
+            isComplete = currentPeriod > (q + 1) ||
+                         statusType === "STATUS_FINAL" ||
+                         statusType === "STATUS_FINAL_OVERTIME" ||
+                         (statusType === "STATUS_HALFTIME" && q < 2);
+        } else {
+            isComplete = statusType === "STATUS_FINAL" || statusType === "STATUS_FINAL_OVERTIME";
+        }
+
+        // Determine if this is the current active quarter
+        var isActive = false;
+        if (q < 3) {
+            isActive = currentPeriod === (q + 1) &&
+                       statusType !== "STATUS_FINAL" &&
+                       statusType !== "STATUS_FINAL_OVERTIME";
+        } else {
+            isActive = currentPeriod >= 4 &&
+                       statusType !== "STATUS_FINAL" &&
+                       statusType !== "STATUS_FINAL_OVERTIME";
+        }
+
+        // Reset classes
+        itemEl.classList.remove("completed", "active");
+
+        if (isComplete && topLines.length >= periodsNeeded && leftLines.length >= periodsNeeded) {
+            // Compute cumulative score
+            var topCum = 0, leftCum = 0;
+            for (var p = 0; p < periodsNeeded; p++) {
+                topCum  += parseFloat(topLines[p].value) || 0;
+                leftCum += parseFloat(leftLines[p].value) || 0;
+            }
+
+            var result = lookupWinner(topCum, leftCum);
+            var payout = Math.round(prizePool * CONFIG.payouts[key]);
+            scoreEl.textContent = topCum + "-" + leftCum;
+
+            if (result) {
+                nameEl.textContent = result.participant.name;
+                nameEl.style.color = result.participant.color;
+            } else {
+                nameEl.textContent = "--";
+                nameEl.style.color = "";
+            }
+
+            payoutEl.textContent = "$" + payout.toLocaleString();
+            itemEl.classList.add("completed");
+        } else if (isActive) {
+            nameEl.textContent = "In progress";
+            nameEl.style.color = "";
+            scoreEl.textContent = "";
+            payoutEl.textContent = "";
+            itemEl.classList.add("active");
+        } else {
+            nameEl.textContent = "--";
+            nameEl.style.color = "";
+            scoreEl.textContent = "";
+            payoutEl.textContent = "";
+        }
+    }
+}
+
+function autoFillQuarterScores(topComp, leftComp, currentPeriod, statusType) {
+    var topLines  = topComp.linescores  || [];
+    var leftLines = leftComp.linescores || [];
+
+    var qMap = ["Q1","Q2","Q3","Final"];
+
+    // For each completed quarter, compute cumulative score and fill inputs
+    for (var q = 0; q < 4; q++) {
+        var quarterKey = qMap[q];
+        var periodsNeeded = (q < 3) ? (q + 1) : topLines.length; // Final = all periods
+
+        // Check if this quarter is complete
+        var isComplete = false;
+        if (q < 3) {
+            // Quarter q+1 is complete if currentPeriod > q+1, or game is final
+            isComplete = currentPeriod > (q + 1) ||
+                         statusType === "STATUS_FINAL" ||
+                         statusType === "STATUS_FINAL_OVERTIME" ||
+                         (statusType === "STATUS_HALFTIME" && q < 2);
+        } else {
+            // Final is complete only when game is over
+            isComplete = statusType === "STATUS_FINAL" || statusType === "STATUS_FINAL_OVERTIME";
+        }
+
+        if (!isComplete) continue;
+        if (topLines.length < periodsNeeded || leftLines.length < periodsNeeded) continue;
+
+        // Compute cumulative score through this quarter
+        var topCum = 0, leftCum = 0;
+        for (var p = 0; p < periodsNeeded; p++) {
+            topCum  += parseFloat(topLines[p].value)  || 0;
+            leftCum += parseFloat(leftLines[p].value) || 0;
+        }
+
+        var topInput  = document.getElementById("score-top-" + quarterKey);
+        var leftInput = document.getElementById("score-left-" + quarterKey);
+        if (topInput && leftInput) {
+            topInput.value  = topCum;
+            leftInput.value = leftCum;
+            topInput.classList.add("live-filled");
+            leftInput.classList.add("live-filled");
+            onScoreChange(quarterKey);
+        }
+    }
+}
+
+// ================================================================
+// INIT
 // ================================================================
 function init() {
-    const saved = loadState();
+    var saved = loadState();
 
     if (saved && saved.locked) {
         currentSeed = saved.seed;
@@ -909,18 +2018,20 @@ function init() {
     renderScoring();
     updateLockUI();
 
-    // Restore saved scores
     if (saved && saved.scores) {
-        ["Q1","Q2","Q3","Final"].forEach(q => {
+        ["Q1","Q2","Q3","Final"].forEach(function(q) {
             if (saved.scores[q]) {
-                const topInput  = document.getElementById(`score-top-${q}`);
-                const leftInput = document.getElementById(`score-left-${q}`);
+                var topInput  = document.getElementById("score-top-" + q);
+                var leftInput = document.getElementById("score-left-" + q);
                 if (topInput)  topInput.value  = saved.scores[q].top  || "";
                 if (leftInput) leftInput.value = saved.scores[q].left || "";
             }
         });
         recheckAllScores();
     }
+
+    // Auto-start live score since live tab is default
+    startLiveScore();
 }
 
 init();
