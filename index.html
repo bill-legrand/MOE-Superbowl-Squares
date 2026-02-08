@@ -57,15 +57,27 @@
             flex-direction: column;
         }
 
+        /* Hide chat tab on desktop, show sidebar */
+        .tab-button-chat {
+            display: none;
+        }
+
+        /* On smaller screens, hide sidebar and show chat tab */
         @media (max-width: 1200px) {
             .main-layout {
                 flex-direction: column;
             }
             .chat-sidebar {
-                width: 100%;
-                position: relative;
-                height: 500px;
-                top: 0;
+                display: none !important;
+            }
+            .tab-button-chat {
+                display: inline-block;
+            }
+            #tab-chat {
+                display: none;
+            }
+            #tab-chat.active {
+                display: block;
             }
         }
 
@@ -1136,6 +1148,7 @@
         <div class="tabs-container">
             <div class="tabs-nav">
                 <button class="tab-button active" onclick="switchTab('live')">Live Score</button>
+                <button class="tab-button tab-button-chat" onclick="switchTab('chat')">Chat</button>
                 <button class="tab-button" onclick="switchTab('admin')">Admin</button>
             </div>
 
@@ -1194,6 +1207,33 @@
                             <span class="lqw-payout" id="lqw-payout-Final"></span>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-chat" class="tab-content">
+        <div style="max-width: 800px; width: 100%; margin: 0 auto; height: 600px;">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <h3>Game Chat</h3>
+                    <div class="chat-user-setup" id="chat-user-setup-mobile">
+                        <input type="text" id="chat-username-mobile" placeholder="Enter your name" maxlength="20" />
+                        <button onclick="setUsernameMobile()">Join</button>
+                    </div>
+                    <div class="chat-user-info" id="chat-user-info-mobile" style="display: none;">
+                        <span><strong id="display-username-mobile"></strong></span>
+                        <button class="btn-small" onclick="changeUsernameMobile()">Change</button>
+                    </div>
+                </div>
+                
+                <div class="chat-messages" id="chat-messages-mobile">
+                    <div class="chat-loading">Loading messages...</div>
+                </div>
+                
+                <div class="chat-input-container">
+                    <input type="text" id="chat-input-mobile" placeholder="Type a message..." maxlength="200" disabled />
+                    <button id="chat-send-btn-mobile" onclick="sendMessageMobile()" disabled>Send</button>
                 </div>
             </div>
         </div>
@@ -1321,6 +1361,7 @@ try {
 let currentUsername = localStorage.getItem('chatUsername') || '';
 let messagesListener = null;
 
+// Desktop sidebar chat functions
 function setUsername() {
     const input = document.getElementById('chat-username');
     const username = input.value.trim();
@@ -1344,6 +1385,17 @@ function setUsername() {
     document.getElementById('chat-input').disabled = false;
     document.getElementById('chat-send-btn').disabled = false;
     
+    // Also update mobile if present
+    const mobileSetup = document.getElementById('chat-user-setup-mobile');
+    const mobileInfo = document.getElementById('chat-user-info-mobile');
+    if (mobileSetup && mobileInfo) {
+        mobileSetup.style.display = 'none';
+        mobileInfo.style.display = 'block';
+        document.getElementById('display-username-mobile').textContent = username;
+        document.getElementById('chat-input-mobile').disabled = false;
+        document.getElementById('chat-send-btn-mobile').disabled = false;
+    }
+    
     // Start listening to messages
     if (chatRef) {
         listenToMessages();
@@ -1356,6 +1408,17 @@ function changeUsername() {
     document.getElementById('chat-input').disabled = true;
     document.getElementById('chat-send-btn').disabled = true;
     document.getElementById('chat-username').value = currentUsername;
+    
+    // Also update mobile if present
+    const mobileSetup = document.getElementById('chat-user-setup-mobile');
+    const mobileInfo = document.getElementById('chat-user-info-mobile');
+    if (mobileSetup && mobileInfo) {
+        mobileSetup.style.display = 'flex';
+        mobileInfo.style.display = 'none';
+        document.getElementById('chat-input-mobile').disabled = true;
+        document.getElementById('chat-send-btn-mobile').disabled = true;
+        document.getElementById('chat-username-mobile').value = currentUsername;
+    }
     
     // Stop listening
     if (messagesListener) {
@@ -1386,8 +1449,7 @@ function sendMessage() {
 
 function listenToMessages() {
     if (!chatRef) {
-        const messagesContainer = document.getElementById('chat-messages');
-        messagesContainer.innerHTML = `
+        const setupMessage = `
             <div style="text-align: center; padding: 30px; color: var(--text-dim);">
                 <div style="font-size: 2rem; margin-bottom: 10px;">🔥</div>
                 <div style="font-weight: 600; margin-bottom: 10px; color: var(--gold);">Firebase Setup Required</div>
@@ -1398,11 +1460,19 @@ function listenToMessages() {
                 </div>
             </div>
         `;
+        const messagesContainer = document.getElementById('chat-messages');
+        if (messagesContainer) messagesContainer.innerHTML = setupMessage;
+        
+        const messagesContainerMobile = document.getElementById('chat-messages-mobile');
+        if (messagesContainerMobile) messagesContainerMobile.innerHTML = setupMessage;
         return;
     }
     
     const messagesContainer = document.getElementById('chat-messages');
-    messagesContainer.innerHTML = '';
+    if (messagesContainer) messagesContainer.innerHTML = '';
+    
+    const messagesContainerMobile = document.getElementById('chat-messages-mobile');
+    if (messagesContainerMobile) messagesContainerMobile.innerHTML = '';
     
     // Listen for new messages (limit to last 50)
     chatRef.orderByChild('timestamp').limitToLast(50).on('child_added', function(snapshot) {
@@ -1412,7 +1482,6 @@ function listenToMessages() {
 }
 
 function addMessageToUI(msg) {
-    const messagesContainer = document.getElementById('chat-messages');
     const messageDiv = document.createElement('div');
     messageDiv.className = 'chat-message';
     
@@ -1427,8 +1496,104 @@ function addMessageToUI(msg) {
         <div class="chat-message-text">${escapeHtml(msg.text)}</div>
     `;
     
-    messagesContainer.appendChild(messageDiv);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    // Add to both containers
+    const messagesContainer = document.getElementById('chat-messages');
+    if (messagesContainer) {
+        messagesContainer.appendChild(messageDiv.cloneNode(true));
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+    
+    const messagesContainerMobile = document.getElementById('chat-messages-mobile');
+    if (messagesContainerMobile) {
+        messagesContainerMobile.appendChild(messageDiv.cloneNode(true));
+        messagesContainerMobile.scrollTop = messagesContainerMobile.scrollHeight;
+    }
+}
+
+// Mobile chat functions (mirrors of desktop)
+function setUsernameMobile() {
+    const input = document.getElementById('chat-username-mobile');
+    const username = input.value.trim();
+    
+    if (!username) {
+        alert('Please enter a name');
+        return;
+    }
+    
+    if (username.length < 2) {
+        alert('Name must be at least 2 characters');
+        return;
+    }
+    
+    currentUsername = username;
+    localStorage.setItem('chatUsername', username);
+    
+    document.getElementById('chat-user-setup-mobile').style.display = 'none';
+    document.getElementById('chat-user-info-mobile').style.display = 'block';
+    document.getElementById('display-username-mobile').textContent = username;
+    document.getElementById('chat-input-mobile').disabled = false;
+    document.getElementById('chat-send-btn-mobile').disabled = false;
+    
+    // Also update desktop if present
+    const desktopSetup = document.getElementById('chat-user-setup');
+    const desktopInfo = document.getElementById('chat-user-info');
+    if (desktopSetup && desktopInfo) {
+        desktopSetup.style.display = 'none';
+        desktopInfo.style.display = 'block';
+        document.getElementById('display-username').textContent = username;
+        document.getElementById('chat-input').disabled = false;
+        document.getElementById('chat-send-btn').disabled = false;
+    }
+    
+    // Start listening to messages
+    if (chatRef) {
+        listenToMessages();
+    }
+}
+
+function changeUsernameMobile() {
+    document.getElementById('chat-user-setup-mobile').style.display = 'flex';
+    document.getElementById('chat-user-info-mobile').style.display = 'none';
+    document.getElementById('chat-input-mobile').disabled = true;
+    document.getElementById('chat-send-btn-mobile').disabled = true;
+    document.getElementById('chat-username-mobile').value = currentUsername;
+    
+    // Also update desktop if present
+    const desktopSetup = document.getElementById('chat-user-setup');
+    const desktopInfo = document.getElementById('chat-user-info');
+    if (desktopSetup && desktopInfo) {
+        desktopSetup.style.display = 'flex';
+        desktopInfo.style.display = 'none';
+        document.getElementById('chat-input').disabled = true;
+        document.getElementById('chat-send-btn').disabled = true;
+        document.getElementById('chat-username').value = currentUsername;
+    }
+    
+    // Stop listening
+    if (messagesListener) {
+        chatRef.off('child_added', messagesListener);
+        messagesListener = null;
+    }
+}
+
+function sendMessageMobile() {
+    const input = document.getElementById('chat-input-mobile');
+    const message = input.value.trim();
+    
+    if (!message) return;
+    if (!chatRef) {
+        alert('Chat is not configured. Please add Firebase credentials.');
+        return;
+    }
+    
+    const messageData = {
+        username: currentUsername,
+        text: message,
+        timestamp: Date.now()
+    };
+    
+    chatRef.push(messageData);
+    input.value = '';
 }
 
 function escapeHtml(text) {
@@ -1439,11 +1604,27 @@ function escapeHtml(text) {
 
 // Initialize chat if username is already set
 if (currentUsername && chatRef) {
-    document.getElementById('chat-user-setup').style.display = 'none';
-    document.getElementById('chat-user-info').style.display = 'block';
-    document.getElementById('display-username').textContent = currentUsername;
-    document.getElementById('chat-input').disabled = false;
-    document.getElementById('chat-send-btn').disabled = false;
+    // Desktop
+    const desktopSetup = document.getElementById('chat-user-setup');
+    const desktopInfo = document.getElementById('chat-user-info');
+    if (desktopSetup && desktopInfo) {
+        desktopSetup.style.display = 'none';
+        desktopInfo.style.display = 'block';
+        document.getElementById('display-username').textContent = currentUsername;
+        document.getElementById('chat-input').disabled = false;
+        document.getElementById('chat-send-btn').disabled = false;
+    }
+    
+    // Mobile
+    const mobileSetup = document.getElementById('chat-user-setup-mobile');
+    const mobileInfo = document.getElementById('chat-user-info-mobile');
+    if (mobileSetup && mobileInfo) {
+        mobileSetup.style.display = 'none';
+        mobileInfo.style.display = 'block';
+        document.getElementById('display-username-mobile').textContent = currentUsername;
+        document.getElementById('chat-input-mobile').disabled = false;
+        document.getElementById('chat-send-btn-mobile').disabled = false;
+    }
 }
 
 // Allow Enter key to send messages
@@ -1453,6 +1634,15 @@ document.addEventListener('DOMContentLoaded', function() {
         chatInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 sendMessage();
+            }
+        });
+    }
+    
+    const chatInputMobile = document.getElementById('chat-input-mobile');
+    if (chatInputMobile) {
+        chatInputMobile.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessageMobile();
             }
         });
     }
