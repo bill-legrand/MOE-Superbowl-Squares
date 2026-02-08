@@ -1386,7 +1386,18 @@ function sendMessage() {
 
 function listenToMessages() {
     if (!chatRef) {
-        document.querySelector('.chat-loading').textContent = 'Chat not configured. Add Firebase credentials to enable.';
+        const messagesContainer = document.getElementById('chat-messages');
+        messagesContainer.innerHTML = `
+            <div style="text-align: center; padding: 30px; color: var(--text-dim);">
+                <div style="font-size: 2rem; margin-bottom: 10px;">🔥</div>
+                <div style="font-weight: 600; margin-bottom: 10px; color: var(--gold);">Firebase Setup Required</div>
+                <div style="font-size: 0.85rem; line-height: 1.5;">
+                    Chat needs Firebase to work.<br>
+                    See <strong>FIREBASE_SETUP.md</strong> for instructions.<br><br>
+                    Open <strong>firebase-setup-helper.html</strong> for guided setup.
+                </div>
+            </div>
+        `;
         return;
     }
     
