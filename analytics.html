@@ -136,13 +136,14 @@
         <thead>
             <tr>
                 <th>Time</th>
+                <th>Chat Username</th>
                 <th>Session ID</th>
                 <th>Screen Size</th>
                 <th>Referrer</th>
             </tr>
         </thead>
         <tbody id="pageviews-body">
-            <tr><td colspan="4" class="loading">Loading...</td></tr>
+            <tr><td colspan="5" class="loading">Loading...</td></tr>
         </tbody>
     </table>
     
@@ -151,13 +152,14 @@
         <thead>
             <tr>
                 <th>Time</th>
+                <th>Chat Username</th>
                 <th>Event Type</th>
                 <th>Details</th>
                 <th>Session ID</th>
             </tr>
         </thead>
         <tbody id="events-body">
-            <tr><td colspan="4" class="loading">Loading...</td></tr>
+            <tr><td colspan="5" class="loading">Loading...</td></tr>
         </tbody>
     </table>
     
@@ -211,13 +213,14 @@
                 pageviews.reverse().slice(0, 50).forEach(function(pv) {
                     const row = tbody.insertRow();
                     row.insertCell(0).textContent = new Date(pv.timestamp).toLocaleString();
-                    row.insertCell(1).textContent = pv.sessionId.substring(0, 20) + '...';
-                    row.insertCell(2).textContent = pv.screen;
-                    row.insertCell(3).textContent = pv.referrer;
+                    row.insertCell(1).textContent = pv.chatUsername || 'anonymous';
+                    row.insertCell(2).textContent = pv.sessionId.substring(0, 20) + '...';
+                    row.insertCell(3).textContent = pv.screen;
+                    row.insertCell(4).textContent = pv.referrer;
                 });
                 
                 if (pageviews.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#7a82a0;">No page views in this time range</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#7a82a0;">No page views in this time range</td></tr>';
                 }
             });
             
@@ -245,7 +248,8 @@
                 events.reverse().slice(0, 50).forEach(function(ev) {
                     const row = tbody.insertRow();
                     row.insertCell(0).textContent = new Date(ev.timestamp).toLocaleString();
-                    row.insertCell(1).textContent = ev.eventType;
+                    row.insertCell(1).textContent = ev.chatUsername || 'anonymous';
+                    row.insertCell(2).textContent = ev.eventType;
                     
                     let details = '';
                     if (ev.eventType === 'chat_message') {
@@ -254,13 +258,15 @@
                         details = `Participant: ${ev.participant}`;
                     } else if (ev.eventType === 'tab_switch') {
                         details = `Tab: ${ev.tab}`;
+                    } else if (ev.eventType === 'username_set') {
+                        details = `Set to: ${ev.username}`;
                     }
-                    row.insertCell(2).textContent = details;
-                    row.insertCell(3).textContent = ev.sessionId.substring(0, 20) + '...';
+                    row.insertCell(3).textContent = details;
+                    row.insertCell(4).textContent = ev.sessionId.substring(0, 20) + '...';
                 });
                 
                 if (events.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#7a82a0;">No events in this time range</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#7a82a0;">No events in this time range</td></tr>';
                 }
             });
         }

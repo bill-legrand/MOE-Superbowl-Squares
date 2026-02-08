@@ -1420,9 +1420,12 @@ function logPageView() {
     const sessionId = sessionStorage.getItem('sessionId') || 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     sessionStorage.setItem('sessionId', sessionId);
     
+    const chatUsername = localStorage.getItem('chatUsername') || 'anonymous';
+    
     const logData = {
         timestamp: Date.now(),
         sessionId: sessionId,
+        chatUsername: chatUsername,
         userAgent: navigator.userAgent,
         screen: `${window.screen.width}x${window.screen.height}`,
         viewport: `${window.innerWidth}x${window.innerHeight}`,
@@ -1438,10 +1441,12 @@ function logEvent(eventType, eventData = {}) {
     if (!analyticsRef) return;
     
     const sessionId = sessionStorage.getItem('sessionId') || 'unknown';
+    const chatUsername = localStorage.getItem('chatUsername') || 'anonymous';
     
     const logData = {
         timestamp: Date.now(),
         sessionId: sessionId,
+        chatUsername: chatUsername,
         eventType: eventType,
         ...eventData
     };
@@ -1483,6 +1488,9 @@ function setUsername() {
     document.getElementById('display-username').textContent = username;
     document.getElementById('chat-input').disabled = false;
     document.getElementById('chat-send-btn').disabled = false;
+    
+    // Log username set event
+    logEvent('username_set', { username: username });
     
     // Also update mobile if present
     const mobileSetup = document.getElementById('chat-user-setup-mobile');
