@@ -488,6 +488,59 @@
             word-wrap: break-word;
         }
 
+        .chat-reactions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 6px;
+        }
+
+        .chat-reaction {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 2px 6px;
+            background: rgba(201, 168, 76, 0.15);
+            border: 1px solid rgba(201, 168, 76, 0.3);
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: var(--text);
+        }
+
+        .chat-reaction-picker {
+            display: none;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px solid rgba(201, 168, 76, 0.1);
+        }
+
+        .chat-message:hover .chat-reaction-picker {
+            display: flex;
+        }
+
+        .reaction-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0;
+            transition: all 0.2s;
+        }
+
+        .reaction-btn:hover {
+            background: rgba(201, 168, 76, 0.2);
+            border-color: var(--gold);
+            transform: scale(1.1);
+        }
+
         .chat-input-container {
             padding: 12px;
             background: rgba(10, 14, 39, 0.5);
@@ -774,7 +827,7 @@
         .team-logo-left {
             position: absolute;
             left: 5px;
-            top: 46%;
+            top: 52%;
             transform: translateY(-50%);
             width: 65px;
             height: 65px;
@@ -1478,16 +1531,38 @@ function listenToMessages() {
     // Listen for new messages (limit to last 50)
     chatRef.orderByChild('timestamp').limitToLast(50).on('child_added', function(snapshot) {
         const msg = snapshot.val();
-        addMessageToUI(msg);
+        const msgId = snapshot.key;
+        addMessageToUI(msg, msgId);
+        
+        // Listen for reaction changes on this message
+        chatRef.child(msgId).child('reactions').on('value', function(reactionSnapshot) {
+            updateReactions(msgId, reactionSnapshot.val());
+        });
     });
 }
 
-function addMessageToUI(msg) {
+function addMessageToUI(msg, msgId) {
     const messageDiv = document.createElement('div');
     messageDiv.className = 'chat-message';
+    messageDiv.dataset.messageId = msgId;
     
     const time = new Date(msg.timestamp);
     const timeStr = time.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    
+    const reactions = msg.reactions || {};
+    const reactionCounts = {};
+    Object.values(reactions).forEach(emoji => {
+        reactionCounts[emoji] = (reactionCounts[emoji] || 0) + 1;
+    });
+    
+    let reactionsHTML = '';
+    if (Object.keys(reactionCounts).length > 0) {
+        reactionsHTML = '<div class="chat-reactions">';
+        for (const [emoji, count] of Object.entries(reactionCounts)) {
+            reactionsHTML += `<span class="chat-reaction">${emoji} ${count}</span>`;
+        }
+        reactionsHTML += '</div>';
+    }
     
     messageDiv.innerHTML = `
         <div class="chat-message-header">
@@ -1495,7 +1570,82 @@ function addMessageToUI(msg) {
             <span class="chat-message-time">${timeStr}</span>
         </div>
         <div class="chat-message-text">${escapeHtml(msg.text)}</div>
+        ${reactionsHTML}
+        <div class="chat-reaction-picker">
+            <button class="reaction-btn" onclick="addReaction('${msgId}', '👍')" title="Thumbs up">👍</button>
+            <button class="reaction-btn" onclick="addReaction('${msgId}', '❤️')" title="Heart">❤️</button>
+            <button class="reaction-btn" onclick="addReaction('${msgId}', '😂')" title="Laughing">😂</button>
+            <button class="reaction-btn" onclick="addReaction('${msgId}', '🎉')" title="Party">🎉</button>
+            <button class="reaction-btn" onclick="addReaction('${msgId}', '🔥')" title="Fire">🔥</button>
+            <button class="reaction-btn" onclick="addReaction('${msgId}', '🏈')" title="Football">🏈</button>
+        </div>
     `;
+    
+    const messagesContainer = document.getElementById('chat-messages');
+    if (messagesContainer) {
+        messagesContainer.appendChild(messageDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+    
+    const messagesContainerMobile = document.getElementById('chat-messages-mobile');
+    if (messagesContainerMobile) {
+        const mobileMsgDiv = messageDiv.cloneNode(true);
+        messagesContainerMobile.appendChild(mobileMsgDiv);
+        messagesContainerMobile.scrollTop = messagesContainerMobile.scrollHeight;
+    }
+}
+
+function updateReactions(msgId, reactions) {
+    const reactionCounts = {};
+    if (reactions) {
+        Object.values(reactions).forEach(emoji => {
+            reactionCounts[emoji] = (reactionCounts[emoji] || 0) + 1;
+        });
+    }
+    
+    let reactionsHTML = '';
+    if (Object.keys(reactionCounts).length > 0) {
+        reactionsHTML = '<div class="chat-reactions">';
+        for (const [emoji, count] of Object.entries(reactionCounts)) {
+            reactionsHTML += `<span class="chat-reaction">${emoji} ${count}</span>`;
+        }
+        reactionsHTML += '</div>';
+    }
+    
+    // Update desktop
+    const desktopMsg = document.querySelector(`#chat-messages .chat-message[data-message-id="${msgId}"]`);
+    if (desktopMsg) {
+        let existingReactions = desktopMsg.querySelector('.chat-reactions');
+        if (existingReactions) {
+            existingReactions.remove();
+        }
+        if (reactionsHTML) {
+            const textDiv = desktopMsg.querySelector('.chat-message-text');
+            textDiv.insertAdjacentHTML('afterend', reactionsHTML);
+        }
+    }
+    
+    // Update mobile
+    const mobileMsg = document.querySelector(`#chat-messages-mobile .chat-message[data-message-id="${msgId}"]`);
+    if (mobileMsg) {
+        let existingReactions = mobileMsg.querySelector('.chat-reactions');
+        if (existingReactions) {
+            existingReactions.remove();
+        }
+        if (reactionsHTML) {
+            const textDiv = mobileMsg.querySelector('.chat-message-text');
+            textDiv.insertAdjacentHTML('afterend', reactionsHTML);
+        }
+    }
+}
+
+function addReaction(msgId, emoji) {
+    if (!chatRef || !currentUsername) return;
+    
+    // Add reaction with username as key to prevent duplicates per user
+    const userKey = currentUsername.replace(/[.#$[\]]/g, '_'); // Sanitize for Firebase key
+    chatRef.child(msgId).child('reactions').child(userKey).set(emoji);
+}
     
     // Add to both containers
     const messagesContainer = document.getElementById('chat-messages');
