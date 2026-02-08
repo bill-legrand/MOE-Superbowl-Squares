@@ -1646,20 +1646,6 @@ function addReaction(msgId, emoji) {
     const userKey = currentUsername.replace(/[.#$[\]]/g, '_'); // Sanitize for Firebase key
     chatRef.child(msgId).child('reactions').child(userKey).set(emoji);
 }
-    
-    // Add to both containers
-    const messagesContainer = document.getElementById('chat-messages');
-    if (messagesContainer) {
-        messagesContainer.appendChild(messageDiv.cloneNode(true));
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-    
-    const messagesContainerMobile = document.getElementById('chat-messages-mobile');
-    if (messagesContainerMobile) {
-        messagesContainerMobile.appendChild(messageDiv.cloneNode(true));
-        messagesContainerMobile.scrollTop = messagesContainerMobile.scrollHeight;
-    }
-}
 
 // Mobile chat functions (mirrors of desktop)
 function setUsernameMobile() {
